@@ -1,0 +1,2859 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Sentinel Tactical Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        spacing: { '4.5': '1.125rem' },
+        fontFamily: {
+          sans: ['"Noto Sans Thai"', 'Inter', 'ui-sans-serif', 'system-ui', 'sans-serif']
+        }
+      }
+    }
+  }
+</script>
+<style>
+  html, body { background:#020617; margin:0; }
+  body { font-family: 'Noto Sans Thai', Inter, ui-sans-serif, system-ui, sans-serif; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes scaleUp { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+  .animate-fadeIn { animation: fadeIn 0.3s ease-out; }
+  .animate-scaleUp { animation: scaleUp 0.22s ease-out; }
+
+  .scrollbar-none::-webkit-scrollbar { display: none; }
+  .scrollbar-none { scrollbar-width: none; -ms-overflow-style: none; }
+
+  #root { width: 100%; display: flex; justify-content: center; min-height: 100vh; }
+
+  #boot-loader {
+    position: fixed; inset: 0; background:#020617; color:#94a3b8;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    font-family: Inter, ui-sans-serif, system-ui, sans-serif; font-size:13px; letter-spacing:.05em; gap:12px; z-index:9999;
+  }
+  #boot-loader .spin {
+    width:28px;height:28px;border-radius:9999px;border:2px solid #1e293b;border-top-color:#3b82f6;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<div id="boot-loader"><div class="spin"></div><span>LOADING TACTICAL TERMINAL...</span></div>
+<div id="root"></div>
+
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@18.3.1",
+    "react-dom/client": "https://esm.sh/react-dom@18.3.1/client",
+    "lucide-react": "https://esm.sh/lucide-react@0.383.0?external=react"
+  }
+}
+</script>
+
+<script src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
+
+<script type="text/babel" data-type="module" data-presets="react">
+import React, { useState, useEffect, useRef } from 'react';
+import ReactDOM from 'react-dom/client';
+import {
+  Shield,
+  CheckSquare,
+  Brain,
+  Lightbulb,
+  Users,
+  Dog,
+  FileText,
+  AlertTriangle,
+  Compass,
+  Map,
+  Award,
+  RefreshCw,
+  ArrowRight,
+  Check,
+  X,
+  Clock,
+  Lock,
+  Download,
+  AlertCircle,
+  HelpCircle,
+  ChevronRight,
+  ChevronDown,
+  Info,
+  Layers,
+  Sparkles,
+  Zap,
+  Scale,
+  Send,
+  Loader2,
+  FileCheck,
+  Activity,
+  Maximize2,
+  Camera,
+  Wand2,
+  Volume2,
+  Image
+} from 'lucide-react';
+
+function getApiKey() {
+  try {
+    return (localStorage.getItem('sentinel_gemini_api_key') || '').trim();
+  } catch (e) {
+    return '';
+  }
+}
+
+const QUIZ_QUESTIONS = [
+  {
+    id: 1,
+    question: "การประเมินแหล่งข่าวและสารสนเทศระดับ 'ก' และความถูกต้อง '1' หมายถึงอะไร?",
+    options: [
+      "ก-1: แหล่งข่าวเชื่อถือได้สูงสุด และสารสนเทศเป็นจริงอย่างแน่นอน (Highly Actionable)",
+      "ก-1: แหล่งข่าวต้องสงสัย แต่ข้อเท็จจริงยืนยันแล้ว",
+      "ก-1: ข้อมูลข่าวสารระดับทดลอง ไม่สามารถนำไปปฏิบัติการได้",
+      "ก-1: ข้อมูลจากสายข่าวระดับล่างที่ยังไม่ผ่านการกรอง"
+    ],
+    answer: 0,
+    rationale: "ระดับ ก (น่าเชื่อถือที่สุด) ร่วมกับระดับ 1 (เป็นจริงแน่นอน) คือระดับสารสนเทศสูงสุดที่ปฏิบัติการได้ทันที"
+  },
+  {
+    id: 2,
+    question: "สุนัขใช้งานทางยุทธวิธีมีประสาทสัมผัสการดมกลิ่นดีกว่ามนุษย์ทั่วไปประมาณกี่เท่า?",
+    options: [
+      "ประมาณ 5 เท่า",
+      "ประมาณ 10 เท่า",
+      "ประมาณ 40 เท่า",
+      "ประมาณ 100 เท่า"
+    ],
+    answer: 2,
+    rationale: "สุนัขใช้งานมีขีดความสามารถการดมกลิ่น (Smell Sensibility) ดีกว่ามนุษย์สูงถึง 40 เท่า"
+  },
+  {
+    id: 3,
+    question: "ระดับสติปัญญา (Intelligence) ของสุนัขตำรวจสายตรวจทั่วไป เทียบเท่ากับเด็กมนุษย์อายุประมาณกี่ขวบ?",
+    options: [
+      "เทียบเท่าเด็กอายุ 2 ขวบ",
+      "เทียบเท่าเด็กอายุ 5 ขวบ",
+      "เทียบเท่าเด็กอายุ 8 ขวบ",
+      "เทียบเท่าเด็กอายุ 12 ขวบ"
+    ],
+    answer: 2,
+    rationale: "สติปัญญาและความสามารถในการเรียนรู้คำสั่งขั้นสูงของสุนัขใช้งานเทียบเท่ากับเด็กมนุษย์อายุ 8 ปี"
+  },
+  {
+    id: 4,
+    question: "ระยะแนวเขตแจ้งเตือนล่วงหน้า (Buffer Zone) ของจุดตรวจ/ด่านตรวจถาวรปกติควรมีระยะขั้นต่ำเท่าใด?",
+    options: [
+      "อย่างน้อย 50 เมตร",
+      "อย่างน้อย 100 เมตร",
+      "อย่างน้อย 200 เมตร",
+      "อย่างน้อย 500 เมตร"
+    ],
+    answer: 2,
+    rationale: "Buffer Zone หรือเขตแจ้งเตือนล่วงหน้าในการคัดกรองรถยนต์เพื่อความปลอดภัยควรมีระยะอย่างน้อย 200 เมตร"
+  },
+  {
+    id: 5,
+    question: "เจ้าหน้าที่ค้นหาหลัก (Contact Officer) ในจุดตรวจค้นรถยนต์ ควรได้รับการป้องกันจากใครเป็นหลัก?",
+    options: [
+      "Cover Officer (เจ้าหน้าที่คุ้มกัน)",
+      "Spotter (เจ้าหน้าที่เฝ้าตรวจระยะไกล)",
+      "Mobile Sandwich Team (ชุดไล่ล่า)",
+      "เจ้าหน้าที่บันทึกวิดีโอ"
+    ],
+    answer: 0,
+    rationale: "Cover Officer มีหน้าที่ยืนคุมเชิงในมุมปลอดภัยเพื่อป้องกันและคุ้มกันชีวิตให้แก่ Contact Officer ที่ทำการตรวจค้น"
+  },
+  {
+    id: 6,
+    question: "การตั้งจุดสกัดแบบ 'Frog Jump' มีเอกลักษณ์เด่นและกำหนดเวลาปฏิบัติการอย่างไร?",
+    options: [
+      "เป็นด่านขนาดใหญ่ ตั้งตระหง่านถาวร 24 ชั่วโมง",
+      "การเคลื่อนย้ายจุดสกัดอย่างรวดเร็ว ทำงานเพียง 10-20 นาทีแล้วย้ายจุดทันทีเพื่อตัดเส้นทางหลบหนี",
+      "ด่านตรวจคัดกรองโรคระบาดระยะยาวตามแนวตะเข็บชายแดน",
+      "การเดินลาดตระเวนด้วยเท้าเปล่าโดยไม่มีจุดพิกัดที่แน่นอน"
+    ],
+    answer: 1,
+    rationale: "จุดสกัดเคลื่อนที่เร็ว (Frog Jump) เน้นตั้งเร็ว รวบตัวเป้าหมาย และย้ายภายใน 10-20 นาทีเพื่อป้องกันไม่ให้ข่าวรั่วไหล"
+  },
+  {
+    id: 7,
+    question: "เทคนิคยุทธวิธี 'DNA hand-tap' ทำเพื่อวัตถุประสงค์ใดในการเข้าประชิดรถต้องสงสัย?",
+    options: [
+      "เพื่อผลักดันตัวถังรถยนต์ให้หยุดนิ่งด้วยกำลังกาย",
+      "เพื่อฝากลายนิ้วมือหรือดีเอ็นเอของเจ้าหน้าที่ไว้ที่ส่วนท้ายรถ เพื่อใช้ยืนยันกรณีรถคันดังกล่าวพยายามหลบหนีหรือชนแล้วหนี",
+      "เพื่อตรวจหาสารปนเปื้อนเคมีจากฝุ่นสีรอบนอกรถ",
+      "เพื่อกระตุ้นให้สุนัข K-9 เห่าส่งสัญญาณเตือนภัย"
+    ],
+    answer: 1,
+    rationale: "การแตะสัมผัสท้ายรถ (DNA hand-tap) ช่วยทิ้งหลักฐานดีเอ็นเอของเจ้าหน้าที่ไว้ที่รถเป้าหมาย เพื่อผูกโยงทางนิติวิทยาศาสตร์"
+  },
+  {
+    id: 8,
+    question: "การจัดชุดตรวจค้นแบบ 4 ทีมหมวนเวียนปฏิบัติงาน (Rotation Grid) ประกอบด้วยตำแหน่งสำคัญใดบ้าง?",
+    options: [
+      "นายด่าน, พนักงานบัญชี, ช่างเทคนิค, คนขับรถ",
+      "Spotter, Contact Officer, Cover Officer, Mobile Sandwich Team",
+      "ผู้เจรจา, ผู้ยิงสนับสนุน, ผู้สืบสวน, ล่ามแปลภาษา",
+      "สุนัข K-9, คนจูง, นักกฎหมาย, หัวหน้าฝ่ายปกครอง"
+    ],
+    answer: 1,
+    rationale: "ตำแหน่งยุทธวิธีหลักในการคุมด่านตรวจประกอบด้วย Spotter (เฝ้าดู), Contact (ตรวจค้น), Cover (คุ้มกัน) และ Mobile Sandwich (สะกัดจับสายฟ้าแลบ)"
+  },
+  {
+    id: 9,
+    question: "หากพบว่าสุนัข K-9 สูดดมสารเสพติดหรือสารพิษเกินขนาด (Overdose) ข้อใดคือขั้นตอนปฐมพยาบาลเร่งด่วนที่สุด?",
+    options: [
+      "ให้สุนัขกินยาพาราเซตามอลทันทีเพื่อลดไข้",
+      "หยุดการปฏิบัติงานทันที ย้ายไปพื้นที่อากาศถ่ายเท ล้างทำความสะอาดจมูกและปากด้วยน้ำสะอาด แล้วนำส่งสัตวแพทย์ด่วนที่สุด",
+      "ปล่อยให้สุนัขนอนหลับพักผ่อนกลางแดดเพื่อขับเหงื่อ",
+      "บังคับให้สุนัขออกกำลังกายหนักขึ้นเพื่อสลายสารพิษ"
+    ],
+    answer: 1,
+    rationale: "เมื่อ K-9 โอเวอร์โดส ต้องหยุดงาน ล้างสารพิษทางเดินหายใจด้วยน้ำสะอาดทันที หลีกเลี่ยงยาเคมี และส่งสัตวแพทย์ด่วน"
+  },
+  {
+    id: 10,
+    question: "การจัดตั้ง 'ด่านตรวจ' (Checkpoint) ขนาดใหญ่เปิด 24 ชั่วโมง มีสิ่งอำนวยความสะดวกถาวร ต้องอนุมัติโดยระดับใด?",
+    options: [
+      "ผู้บังคับกองร้อยตำรวจตระเวนชายแดน",
+      "ผู้กำกับการสถานีตำรวจในท้องที่",
+      "คณะรัฐมนตรี (Cabinet Approval)",
+      "ผู้ใหญ่บ้านหรือกำนันประจำตำบล"
+    ],
+    answer: 2,
+    rationale: "ด่านตรวจถาวรที่กระทบต่อการสัญจรปกติของประชาชน ต้องผ่านการอนุมัติความเห็นชอบจากคณะรัฐมนตรี"
+  },
+  {
+    id: 11,
+    question: "ตาม พ.ร.บ. ป้องกันและปราบปรามการทรมานฯ พ.ศ. 2565 'มาตรา 5' บัญญัติห้ามเกี่ยวกับเรื่องใดชัดเจน?",
+    options: [
+      "การซ้อมทรมานโดยเจ้าหน้าที่รัฐ (Torture)",
+      "การควบคุมตัวบุคคลโดยไม่มีหมายศาลในคดีแพ่ง",
+      "การหลบหนีเข้าเมืองโดยผิดกฎหมาย",
+      "การจัดเก็บข้อมูลชีวภาพโดยไม่มีการลงลายมือชื่อ"
+    ],
+    answer: 0,
+    rationale: "มาตรา 5 ห้ามมิให้เจ้าหน้าที่รัฐกระทำการทรมาน เพื่อให้ได้มาซึ่งคำสารภาพหรือข้อมูลใดๆ"
+  },
+  {
+    id: 12,
+    question: "การกระทำอันโหดร้าย ไร้ยางอาย หรือย่ำยีศักดิ์ศรีความเป็นมนุษย์ (Cruel, Inhuman, or Degrading Treatment) บัญญัติไว้ในมาตราใด?",
+    options: [
+      "มาตรา 4",
+      "มาตรา 6",
+      "มาตรา 7",
+      "มาตรา 10"
+    ],
+    answer: 1,
+    rationale: "มาตรา 6 แห่ง พ.ร.บ. อุ้มหายฯ บัญญัติถึงการห้ามกระทำการที่โหดร้าย ไร้มนุษยธรรม หรือย่ำยีศักดิ์ศรีความเป็นมนุษย์"
+  },
+  {
+    id: 13,
+    question: "เหตุใดความสม่ำเสมอของสมุดบันทึกปฏิบัติการสุนัขตำรวจ (K-9 Logbook) จึงมีความสำคัญในชั้นศาล?",
+    options: [
+      "เพื่อให้เห็นยอดเงินอุดหนุนค่าอาหารสุนัข",
+      "เพื่อป้องกันมิให้ทนายฝ่ายจำเลยซักค้านทำลายน้ำหนักคำให้การของสุนัขดมกลิ่น โดยพิสูจน์ได้ว่าได้รับการฝึกอย่างต่อเนื่องตามมาตรฐาน",
+      "เพื่อเป็นหลักฐานในการเลื่อนยศของครูฝึก",
+      "เพื่อแสดงต่อสื่อมวลชนเป็นแคมเปญโฆษณาชวนเชื่อ"
+    ],
+    answer: 1,
+    rationale: "Logbook ที่บันทึกอย่างสม่ำเสมอทุกสัปดาห์ช่วยยืนยันระดับความแม่นยำทางวิทยาศาสตร์ของสุนัขเพื่อรับฟังเป็นพยานหลักฐานในชั้นศาล"
+  },
+  {
+    id: 14,
+    question: "การเข้าตรวจยานพาหนะจากด้านหลัง เจ้าหน้าที่ควรเดินประชิดทำมุมใดเพื่อความปลอดภัยสูงสุดเพื่อไม่ให้สะท้อนในกระจกมองข้าง?",
+    options: [
+      "เดินตรงเข้าหาตัวถังด้านข้างโดยตรง",
+      "ทำมุมเอียง 45 องศา (45-degree tactical safe path)",
+      "เดินอ้อมตัดหน้าหม้อน้ำรถยนต์",
+      "หมอบราบไปกับพื้นและคืบคลานเข้าหาล้อรถ"
+    ],
+    answer: 1,
+    rationale: "การเดินทำมุม 45 องศาเฉียงจากด้านหลังช่วยลดมุมมองสายตาของผู้ขับขี่ผ่านกระจกข้าง และเพิ่มโอกาสการป้องกันตัวเมื่อเปิดประตูรถกะทันหัน"
+  },
+  {
+    id: 15,
+    question: "การจัดตั้ง 'จุดตรวจ' (Temporary Checkpoint) ชั่วคราวในระดับจังหวัด ต้องได้รับการอนุมัติขั้นแรกจากผู้ใด?",
+    options: [
+      "นายอำเภอท้องที่",
+      "ผู้บังคับการตำรวจภูธรจังหวัด (Provincial Commander)",
+      "เจ้าพนักงานควบคุมโรคติดต่อ",
+      "คณะกรรมการสิทธิมนุษยชนแห่งชาติ"
+    ],
+    answer: 1,
+    rationale: "จุดตรวจชั่วคราวที่มีกำหนดระยะเวลาชัดเจน ต้องได้รับอนุมัติเห็นชอบจากผู้บังคับการตำรวจภูธรจังหวัดหรือเทียบเท่า"
+  },
+  {
+    id: 16,
+    question: "ตามหลัก SOP เมื่อสุนัขแจ้งเตือนปฏิกิริยาพบสารเสพติด (K-9 Alert) จะต้องใช้มาตรการทางกลไก/กำลังพล ตรวจสอบซ้ำเป็นสัดส่วนเท่าใดเพื่อความรัดกุม?",
+    options: [
+      "สุ่มตรวจสอบซ้ำอย่างน้อย 2%",
+      "ตรวจสอบซ้ำขั้นต่ำ 10% (10% Mechanical double-check)",
+      "ไม่จำเป็นต้องตรวจสอบซ้ำเพราะสุนัขถูกต้องเสมอ",
+      "ต้องรื้อค้นรถยนต์ทุกคันอย่างละเอียด 100% เสมอโดยไม่มีข้อยกเว้น"
+    ],
+    answer: 1,
+    rationale: "SOP กำหนดให้ทำ 10% Double Check โดยระบบหรือเจ้าหน้าที่ เพื่อเป็นการทดสอบความถูกต้องและป้องกันข้อผิดพลาดเชิงระบบ"
+  },
+  {
+    id: 17,
+    question: "ระยะเวลาการทำงานสูงสุดติดต่อกันภายใต้สภาพอากาศร้อนชื้น ก่อนที่สุนัข K-9 จะต้องได้รับการพักผ่อนคือข้อใด?",
+    options: [
+      "ไม่เกิน 30 นาที",
+      "ไม่เกิน 3 ชั่วโมง (3-hour operational heat limit)",
+      "สามารถทำงานติดต่อกันได้ 8 ชั่วโมงโดยไม่พัก",
+      "ห้ามจำกัดเวลา ขึ้นอยู่กับสภาพร่างกายของสุนัขรายตัว"
+    ],
+    answer: 1,
+    rationale: "อุณหภูมิที่สูงและแดดจ้าส่งผลต่อประสิทธิภาพการสูดดมและทางเดินหายใจ จึงจำกัดกรอบปฏิบัติงานไม่เกิน 3 ชั่วโมงก่อนพักลดความเครียดและความร้อน"
+  },
+  {
+    id: 18,
+    question: "พ.ร.บ. ป้องกันและปราบปรามการทรมานฯ พ.ศ. 2565 'มาตรา 7' บัญญัติควบคุมในกรณีใด?",
+    options: [
+      "การจัดซื้ออาวุธปราบปรามการจลาจล",
+      "การทำให้บุคคลสูญหายโดยเจ้าหน้าที่ของรัฐ (Enforced Disappearance)",
+      "สิทธิในการขอรับทนายความฟรีในชั้นศาล",
+      "ข้อบังคับการลาพักร้อนของข้าราชการ"
+    ],
+    answer: 1,
+    rationale: "มาตรา 7 ป้องกันการบังคับสูญหาย หรืออุ้มหายโดยเด็จขาด ถือเป็นความผิดอาญาต่อเนื่องจนกว่าจะทราบชะตากรรมของเหยื่อ"
+  },
+  {
+    id: 19,
+    question: "กรณีจับกุมผู้ต้องหาโดยที่กล้องร่างกาย (Body-cam) เกิดขัดข้องกะทันหัน เจ้าหน้าที่ต้องรายงานลงในแบบรายงานใดเพื่อป้องกันความผิดตามกฎหมายอุ้มหาย?",
+    options: [
+      "แบบ ปท.1 (PT.1 Document) พร้อมระบุเหตุสุดวิสัยและรายละเอียดอย่างโปร่งใส",
+      "แบบฟอร์มบันทึกของรางวัลประจำปี",
+      "ใบแจ้งค่าธรรมเนียมจราจรทั่วไป",
+      "ไม่ต้องบันทึกใดๆ ปล่อยผ่านเพื่อไม่ให้เป็นหลักฐานความบกพร่อง"
+    ],
+    answer: 0,
+    rationale: "แบบ ปท.1 ใช้บันทึกพฤติการณ์จับกุม รายละเอียดควบคุมตัว และเหตุสุดวิสัยทางเทคนิค เช่น กล้องขัดข้อง เพื่อแสดงความสุจริตต่ออัยการและฝ่ายปกครอง"
+  },
+  {
+    id: 20,
+    question: "เมื่อเกิดสถานการณ์ฉุกเฉิน คนร้ายใช้อาวุธสงครามยิงโจมตีด่านตรวจ สิ่งแรกสุดที่ผู้ปฏิบัติการต้องทำตาม SOP คืออะไร?",
+    options: [
+      "วิเคราะห์และวิ่งเข้าไปขอกล้องวงจรปิดจากประชาชนใกล้เคียง",
+      "วิเคราะห์หาที่กำบังแข็งที่สามารถหยุดยั้งวิถีกระสุนได้ (Hard Cover) พร้อมแจ้งพิกัดต่อทีม Mobile และยิงตอบโต้เพื่อป้องกันชีวิตตามหลักสัดส่วนและสิทธิมนุษยชน",
+      "ละทิ้งอาวุธยุทโธปกรณ์ทั้งหมดแล้ววิ่งแยกย้ายเข้าป่าเพื่อรักษากำลังพล",
+      "เจรจาต่อรองขอแลกเปลี่ยนตัวประกันโดยไม่มีอาวุธป้องกันตัว"
+    ],
+    answer: 1,
+    rationale: "SOP ปะทะระบุให้หา Hard Cover ทันทีเพื่อรักษาสุขภาพกำลังพล แจ้งเตือนเครือข่ายวิทยุประสาน และตอบโต้ทางยุทธวิธีตามสมควรแก่เหตุ"
+  }
+];
+
+const AGENCY_DATA = [
+  { name: "ป.ป.ส. (ONCB)", role: "วิเคราะห์เส้นทางลำเลียงยาเสพติด กำหนดเป้าหมายระดับชาติ สนับสนุนงบประมาณและเครื่องมือตรวจวิเคราะห์สารเคมีต้นน้ำ" },
+  { name: "กองทัพบก (Royal Army)", role: "สกัดกั้นทางยุทธวิธีตลอดแนวชายแดน เฝ้าระวังช่องทางธรรมชาติผ่านกองกำลังป้องกันชายแดนและกำลังพลลาดตระเวน" },
+  { name: "ตำรวจตระเวนชายแดน (BPP)", role: "ลาดตระเวน คลี่คลายสถานการณ์ จัดตั้งจุดตรวจ/จุดสกัดแทรกซึมลึก และส่งทีม K-9 ขยายผลสืบสวนหาหลักฐานในพื้นที่ทุรกันดาร" },
+  { name: "กระทรวงมหาดไทย (Interior)", role: "จัดตั้งด่านร่วมในระดับชุมชนประสานงานฝ่ายปกครอง กำนัน ผู้ใหญ่บ้าน ตรวจตราคัดกรองแรงงานเถื่อนและผู้มีอิทธิพลท้องถิ่น" }
+];
+
+const K9_BIO = {
+  smell: "x40 เท่า (ดีกว่ามนุษย์เพื่อคัดแยกสารเสพติดเชิงซ้อน)",
+  hearing: "x20 เท่า (ได้ยินความถี่สูงและเสียงแผ่วเบาระยะไกล)",
+  vision: "x10 เท่า (ตรวจจับการเคลื่อนไหวในความมืดได้เป็นเลิศ)",
+  intelligence: "เทียบเท่าเด็กอายุ 8 ขวบ (เรียนรู้คำสั่งยุทธวิธีซับซ้อน)",
+  categories: [
+    { title: "K-9 อารักขา & ป้องกัน (Security)", desc: "เน้นระงับเหตุรุนแรง อารักขากองร้อย ตรวจค้นพื้นที่จำกัด ป้องกันการโจมตีทางยุทธวิธี" },
+    { title: "K-9 ค้นหาพัสดุ/สารเสพติด (Tactical Search)", desc: "เชี่ยวชาญการสะกดรอย ตรวจค้นพาหนะ ยาเสพติด วัตถุระเบิดด้วยความไวสูง" },
+    { title: "K-9 ค้นหาบุคคล/กู้ภัยพิเศษ (Special Duties)", desc: "ดมกลิ่นตามรอย DNA ค้นหาบุคคลสูญหาย ค้นหาในพื้นที่ภัยพิบัติเชิงลึก" }
+  ]
+};
+
+const DATA_RELIABILITY_CODES = [
+  { code: "ก", desc: "เชื่อถือได้สูงสุด ไม่มีข้อสงสัยในความซื่อสัตย์" },
+  { code: "ข", desc: "ค่อนข้างน่าเชื่อถือ มีประวัติข้อมูลแม่นยำเป็นส่วนใหญ่" },
+  { code: "ค", desc: "พอเชื่อถือได้ มีข้อจำกัดบางประการในอดีต" },
+  { code: "ง", desc: "มักไม่น่าเชื่อถือ ข้อมูลที่ผ่านมาส่วนใหญ่คลาดเคลื่อน" },
+  { code: "จ", desc: "เชื่อไม่ได้เด็ดขาด ตั้งใจให้ข้อมูลเท็จบ่อยครั้ง" },
+  { code: "ฉ", desc: "ประเมินไม่ได้ แหล่งข่าวรายใหม่ ไม่มีประวัติอ้างอิง" }
+];
+
+const DATA_CERTAINTY_CODES = [
+  { code: "1", desc: "ยืนยันความถูกต้องแล้วจากแหล่งข่าวอื่นหรือเอกสารหลักฐาน" },
+  { code: "2", desc: "มีความเป็นไปได้สูง สอดคล้องกับพฤติการณ์แวดล้อมส่วนใหญ่" },
+  { code: "3", desc: "มีความเป็นไปได้ มีข่าวลือสนับสนุนในทิศทางเดียวกัน" },
+  { code: "4", desc: "น่าสงสัย ยังไม่มีหลักฐานหรือแนวโน้มชัดเจนยืนยัน" },
+  { code: "5", desc: "ไม่น่าเป็นไปได้ ขัดต่อข้อเท็จจริงทางกายภาพส่วนใหญ่" },
+  { code: "6", desc: "ไม่สามารถตัดสินได้ ข้อมูลสับสน ขัดแย้งกันอย่างรุนแรง" }
+];
+
+
+function App() {
+  const [activeTab, setActiveTab] = useState('dashboard'); // dashboard, checkpoint, checklist, legal, assistant, quiz
+  
+  // Data Evaluation State
+  const [selectedReliability, setSelectedReliability] = useState('ก');
+  const [selectedCertainty, setSelectedCertainty] = useState('1');
+
+  // Interactive Checkpoint State
+  const [selectedZone, setSelectedZone] = useState('none'); // none, spotter, contact, cover, sandwich, buffer
+  const [rotationStep, setRotationStep] = useState(0); // 0: Standard, 1: Tactical Shift, 2: Under Fire Variant
+
+  // Checkpoint In-Depth Configurator State
+  const [configTerrain, setConfigTerrain] = useState('highway'); // highway, secondary, trail
+  const [configTraffic, setConfigTraffic] = useState('high'); // high, low
+
+  // Court Admissibility Battle Simulator State
+  const [courtStep, setCourtStep] = useState(0); // 0: Question, 1: Result
+  const [courtScore, setCourtScore] = useState(0);
+  const [courtQuestionIndex, setCourtQuestionIndex] = useState(0);
+  const [selectedCourtOption, setSelectedCourtOption] = useState(null);
+
+  // New Sub-tabs for AI Assistant panel
+  const [assistantSubTab, setAssistantSubTab] = useState('consult'); // consult, scenario, pt1
+
+  // Gemini New Feature States
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [audioUrl, setAudioUrl] = useState(null);
+  
+  const [isGeneratingVisual, setIsGeneratingVisual] = useState(false);
+  const [visualUrl, setVisualUrl] = useState(null);
+
+  const [analysedImage, setAnalysedImage] = useState(null);
+  const [analysedImagePreview, setAnalysedImagePreview] = useState(null);
+  const [isAnalyzingImage, setIsAnalyzingImage] = useState(false);
+  const [imageAnalysisResult, setImageAnalysisResult] = useState(null);
+
+  const courtQuestions = [
+    {
+      q: "ทนายจำเลยซักค้าน: 'สุนัข K-9 มีความแม่นยำแค่ไหน? และคุณรู้ได้อย่างไรว่าไม่มีปฏิกิริยาแจ้งเตือนเท็จ (False Positive) เพื่อปรักปรำลูกความของฉัน?'",
+      options: [
+        { text: "ตอบด้วยการอ้างความรู้สึกส่วนตัวว่าตนเองและสุนัขทำงานร่วมกันมานาน เชื่อมั่นในสายสัมพันธ์", score: 0, feedback: "❌ ทนายจำเลยจะคัดค้านเพราะเป็นความเห็นส่วนตัวที่ขาดน้ำหนักทางวิทยาศาสตร์" },
+        { text: "ยื่นประวัติฝึกฝนจากสมุด 'K-9 Logbook' ย้อนหลัง 6 เดือน แสดงบันทึกความถูกต้องระดับสม่ำเสมอ >95% ในสถานการณ์ควบคุม", score: 10, feedback: "✅ ถูกต้อง! การใช้บันทึกอย่างเป็นวิทยาศาสตร์และต่อเนื่อง มีน้ำหนักปฏิเสธข้อซักค้านได้สมบูรณ์แบบ" },
+        { text: "ตอบว่าสุนัขผ่านการฝึกฝนจากหลักสูตรโบราณ และมีอำนาจตรวจตามกฎหมายที่ทนายความละเมิดไม่ได้", score: 2, feedback: "⚠️ มีการอ้างหลักสูตร แต่ขาดการพิสูจน์ความสม่ำเสมอในปัจจุบัน เสี่ยงต่อการถูกศาลหักล้างน้ำหนักพยาน" }
+      ]
+    },
+    {
+      q: "ทนายจำเลยซักค้าน: 'พ.ร.บ. ป้องกันอุ้มหายฯ มาตรา 22 บังคับให้บันทึกภาพตลอดการควบคุมตัว เหตุใดป้ายบันทึกการดมกลิ่นของสุนัขถึงไม่มีวิดีโอต่อเนื่องตั้งแต่รถเริ่มเข้าเขตด่าน?'",
+      options: [
+        { text: "ตอบว่าด่านชั่วคราวไม่มีงบประมาณพอที่จะซื้อกล้องติดตั้งถาวรทุกจุด", score: 0, feedback: "❌ การอ้างงบประมาณไม่เป็นเหตุสุดวิสัยตามกฎหมาย และแสดงถึงความบกพร่องเชิงระบบ" },
+        { text: "แสดง 'ปท.1' ระบุเหตุสุดวิสัยด้านสภาพอากาศหรือพอร์ตไฟขัดข้องชั่วคราว พร้อมพยานบุคคลร่วมลงนามตรวจสอบ", score: 10, feedback: "✅ ถูกต้อง! การรายงานเหตุสุดวิสัยใน ปท.1 และแสดงความสุจริตทางเอกสารทันทีช่วยรักษาความชอบธรรมของคดี" },
+        { text: "โต้เถียงว่าภาพถ่ายเฉยๆ ก็เพียงพอแล้ว กฎหมายไม่ได้เข้มงวดขนาดนั้น", score: -5, feedback: "❌ พลั้งพลาดร้ายแรง! พ.ร.บ. บังคับใช้อย่างเด็ดขาด การละเลยวิดีโออาจส่งผลให้พยานหลักฐานนั้นเป็นโมฆะทั้งหมด" }
+      ]
+    }
+  ];
+
+
+  // Multi-Stage SOP & Checklist States
+  const [activeChecklistTab, setActiveChecklistTab] = useState('interdiction'); // interdiction, jointK9, legalEvidence
+
+  const [checklistInterdiction, setChecklistInterdiction] = useState([
+    { id: 1, text: "ตรวจสอบเครื่องมือคัดกรองล่วงหน้า ระยะ Buffer Zone 200 เมตร วางกรวยยางสะท้อนแสงถี่และป้ายไฟแจ้งเตือนชัดเจน", checked: false },
+    { id: 2, text: "วิเคราะห์พฤติกรรมพิรุธเบื้องต้นของยานพาหนะผ่าน Spotter (เช่น อาการชะลอตัวผิดปกติ โยนวัตถุออกนอกตัวรถ)", checked: false },
+    { id: 3, text: "เปิดกล้องบันทึกภาพและเสียงประจำตัว (Body-cam) ของชุดค้นหารวมถึงผู้จูง K-9 ตลอดเวลาตั้งแต่เริ่มเรียกรถเข้าจุดตรวจ", checked: false },
+    { id: 4, text: "เทคนิค DNA hand-tap: เจ้าหน้าที่แตะฝ่ามือสัมผัสท้ายรถต้องสงสัยเพื่อทิ้งรอยนิ้วมือ/ดีเอ็นเอยืนยันพยานแวดล้อม", checked: false },
+    { id: 5, text: "เจ้าหน้าที่ค้นหาหลัก (Contact) เดินประชิดตัวรถทำมุม 45 องศา เลี่ยงการสะท้อนตัวในกระจกมองข้างเพื่อป้องกันการชักอาวุธสวน", checked: false },
+    { id: 6, text: "เจ้าหน้าที่คุ้มกัน (Cover) ตั้งท่าทางคุมเชิงในระยะปลอดภัย 3-5 เมตร พร้อมปะทะหากผู้ขับขี่ประทุษร้าย", checked: false },
+    { id: 7, text: "การสุ่มตรวจสอบซ้ำด้วยเครื่องมือกลศาสตร์ (10% Mechanical double-check) เพื่อป้องกันการปรับตัวหรือสารเคมีกลบกลิ่นดม", checked: false }
+  ]);
+
+  const [checklistJointK9, setChecklistJointK9] = useState([
+    { id: 1, text: "การ Decompression ปรับสภาพอารมณ์สุนัขก่อนปฏิบัติหน้าที่ 15-20 นาที ลดความตื่นตระหนกสถานที่ใหม่", checked: false },
+    { id: 2, text: "ตรวจคัดแยกและกักบริเวณสุนัขจรจัดในพื้นที่ตั้งด่านภายในรัศมี 100 เมตร เพื่อขจัดสิ่งเร้าทางสังคมเพศและอาณาเขต", checked: false },
+    { id: 3, text: "ตรวจสอบทิศทางลม (Wind Direction alignment): สุนัขต้องเข้าค้นหาจากทิศใต้ลมเพื่อให้ละอองกลิ่นจากภายในรถพัดเข้าหาจมูก K-9", checked: false },
+    { id: 4, text: "จำกัดเวลาปฏิบัติหน้าที่ติดต่อกันไม่เกิน 3 ชั่วโมง (Operational Heat Limit) ภายใต้ภูมิอากาศร้อนชื้นของชายแดนไทย", checked: false },
+    { id: 5, text: "เตรียมสารน้ำเกลือและอุปกรณ์สลายความร้อนเบื้องต้น ป้องกันภาวะช็อกแดด (Heat Stroke)", checked: false },
+    { id: 6, text: "การปฐมพยาบาล K-9 Overdose เร่งด่วน: หากสูดดมสารพิษรุนแรง ให้หยุดค้นหา ย้ายไปพื้นที่ลมโกรก ล้างปากและจมูกด้วยน้ำสะอาด ห้ามใช้ยาพาราเซตามอลของคนเด็ดขาด และนำส่งสัตวแพทย์ด่วน", checked: false }
+  ]);
+
+  const [checklistLegalEvidence, setChecklistLegalEvidence] = useState([
+    { id: 1, text: "บันทึกประวัติการฝึกและปฏิกิริยาของ K-9 ประจำสัปดาห์ใน 'K-9 Logbook' อย่างสม่ำเสมอ เพื่อใช้อ้างอิงรับรองผลต่อหน้าศาล", checked: false },
+    { id: 2, text: "เมื่อผู้ขับขี่ยินยอมหรือสุนัขส่งสัญญาณ Alert ให้บันทึกท่าทางที่สุนัขแสดงออก (เช่น นั่งหมอบ หรืองับเป้าหมาย) ลงในรายงานคดี", checked: false },
+    { id: 3, text: "จัดทำบัญชีพยานหลักฐานยาเสพติด โดยระบุประวัติผู้จับกุม เจ้าหน้าที่ร่วมค้น และผู้พบนึ่งอย่างเป็นนิติวิทยาศาสตร์", checked: false },
+    { id: 4, text: "หากกล้องประดับกายขัดข้องกระทันหัน ต้องรีบทำบันทึกแจ้งเหตุวิกฤตระบุในรายงาน ปท.1 เพื่อความโปร่งใสตาม พ.ร.บ.อุ้มหายฯ", checked: false },
+    { id: 5, text: "แจ้งประสานหน่วยงานอัยการจังหวัดและฝ่ายปกครองทันทีหลังจากมีการควบคุมตัวบุคคลตามกฎหมายมาตรา 22", checked: false }
+  ]);
+
+  const [currentScenario, setCurrentScenario] = useState(null);
+  const [isGeneratingScenario, setIsGeneratingScenario] = useState(false);
+  const [scenarioError, setScenarioError] = useState(null);
+  const [scenarioStepStatus, setScenarioStepStatus] = useState({});
+
+  const [consultQuery, setConsultQuery] = useState('');
+  const [isConsulting, setIsConsulting] = useState(false);
+  const [consultResult, setConsultResult] = useState(null);
+  const [consultError, setConsultError] = useState(null);
+
+  const [isAuditing, setIsAuditing] = useState(false);
+  const [auditResult, setAuditResult] = useState(null);
+  const [auditError, setAuditError] = useState(null);
+
+  const [customToast, setCustomToast] = useState(null);
+  const [showApiKeySetup, setShowApiKeySetup] = useState(!getApiKey());
+  const [apiKeyDraft, setApiKeyDraft] = useState(getApiKey());
+
+  // PT.1 Form State
+  const [pt1Form, setPt1Form] = useState({
+    officerName: '',
+    officerRank: '',
+    detaineeName: '',
+    detaineeID: '',
+    detaineeAge: '',
+    location: '',
+    photoPlaceholderDesc: '',
+    forceMejureExplanation: '',
+    witnessName: '',
+    submitted: false
+  });
+
+  // Game/Quiz States
+  const [quizPlayerName, setQuizPlayerName] = useState('');
+  const [quizPlayerRank, setQuizPlayerRank] = useState('');
+  const [quizStarted, setQuizStarted] = useState(false);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [playerScore, setPlayerScore] = useState(0);
+  const [aiScore, setAiScore] = useState(0);
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [quizTimer, setQuizTimer] = useState(10);
+  const [quizPhase, setQuizPhase] = useState('idle'); // idle, playing, reveal, summary
+  const [quizHistory, setQuizHistory] = useState([]); // track correct/wrong for visualization
+
+  const timerRef = useRef(null);
+
+  const showToast = (message, type = 'info') => {
+    setCustomToast({ message, type });
+    setTimeout(() => {
+      setCustomToast(null);
+    }, 4000);
+  };
+
+  const saveApiKey = () => {
+    try {
+      localStorage.setItem('sentinel_gemini_api_key', apiKeyDraft.trim());
+    } catch (e) {}
+    setShowApiKeySetup(false);
+    showToast(apiKeyDraft.trim() ? 'บันทึก Gemini API Key เรียบร้อยแล้ว' : 'ปิดหน้าต่างตั้งค่าโดยยังไม่ได้ใส่คีย์', apiKeyDraft.trim() ? 'success' : 'info');
+  };
+
+  // Base64 to ArrayBuffer Helper for raw signed PCM16 audio
+  const base64ToArrayBuffer = (base64) => {
+    const binaryString = window.atob(base64);
+    const len = binaryString.length;
+    const bytes = new Uint8Array(len);
+    for (let i = 0; i < len; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+    return bytes.buffer;
+  };
+
+  // Convert raw signed PCM16 audio samples to a standard WAV Container
+  const pcmToWav = (pcm16Data, sampleRate) => {
+    const buffer = new ArrayBuffer(44 + pcm16Data.length * 2);
+    const view = new DataView(buffer);
+
+    const writeString = (view, offset, string) => {
+      for (let i = 0; i < string.length; i++) {
+        view.setUint8(offset + i, string.charCodeAt(i));
+      }
+    };
+
+    writeString(view, 0, 'RIFF');
+    view.setUint32(4, 36 + pcm16Data.length * 2, true);
+    writeString(view, 8, 'WAVE');
+    writeString(view, 12, 'fmt ');
+    view.setUint32(16, 16, true);
+    view.setUint16(20, 1, true); // Raw signed PCM
+    view.setUint16(22, 1, true); // Mono
+    view.setUint32(24, sampleRate, true);
+    view.setUint32(28, sampleRate * 2, true); // Byte rate
+    view.setUint16(32, 2, true); // Block align
+    view.setUint16(34, 16, true); // Bits per sample
+    writeString(view, 36, 'data');
+    view.setUint32(40, pcm16Data.length * 2, true);
+
+    let index = 44;
+    for (let i = 0; i < pcm16Data.length; i++) {
+      view.setInt16(index, pcm16Data[i], true);
+      index += 2;
+    }
+
+    return new Blob([view], { type: 'audio/wav' });
+  };
+
+  // call Gemini 2.5 Flash TTS
+  const speakTextWithAI = async (textToSpeak) => {
+    if (!textToSpeak) return;
+    setIsSpeaking(true);
+    
+    // Sanitize markdown tags for clearer speech synthesis
+    const cleanText = textToSpeak.replace(/[#*`\-]/g, ' ');
+    const thaiSpeechPrompt = `Say loudly and clearly in Thai language as a professional military commander: ${cleanText.substring(0, 500)}`;
+
+    const payload = {
+      contents: [{
+        parts: [{ text: thaiSpeechPrompt }]
+      }],
+      generationConfig: {
+        responseModalities: ["AUDIO"],
+        speechConfig: {
+          voiceConfig: {
+            prebuiltVoiceConfig: { voiceName: "Zephyr" } // Bright and clear tone
+          }
+        }
+      }
+    };
+
+    const apiKey = getApiKey();
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
+
+    try {
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (!response.ok) throw new Error("TTS request failed");
+      
+      const result = await response.json();
+      const part = result?.candidates?.[0]?.content?.parts?.[0];
+      const audioData = part?.inlineData?.data;
+      const mimeType = part?.inlineData?.mimeType;
+
+      if (audioData && mimeType && mimeType.startsWith("audio/")) {
+        const match = mimeType.match(/rate=(\d+)/);
+        const sampleRate = match ? parseInt(match[1], 10) : 24000;
+        
+        const pcmData = base64ToArrayBuffer(audioData);
+        const pcm16 = new Int16Array(pcmData);
+        const wavBlob = pcmToWav(pcm16, sampleRate);
+        
+        if (audioUrl) {
+          URL.revokeObjectURL(audioUrl);
+        }
+        
+        const newUrl = URL.createObjectURL(wavBlob);
+        setAudioUrl(newUrl);
+
+        const audio = new Audio(newUrl);
+        audio.onended = () => setIsSpeaking(false);
+        audio.onerror = () => setIsSpeaking(false);
+        audio.play();
+        showToast("กำลังเล่นเสียงสังเคราะห์ผ่าน Gemini TTS...", "success");
+      } else {
+        throw new Error("No playable audio returned");
+      }
+    } catch (e) {
+      console.error(e);
+      showToast("ระบบเสียงสังเคราะห์ขัดข้องชั่วคราว", "error");
+      setIsSpeaking(false);
+    }
+  };
+
+  // call Imagen 4.0 to draw a tactical blueprint visual of the current scenario
+  const generateScenarioVisual = async (scenarioTitle, scenarioContext) => {
+    if (!scenarioTitle) return;
+    setIsGeneratingVisual(true);
+    setVisualUrl(null);
+
+    const apiKey = getApiKey();
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${apiKey}`;
+    const prompt = `A highly detailed blueprint map sketch of a police border checkpoint layout representing this event: "${scenarioTitle}. ${scenarioContext}". Stylized line art graphics, glowing cyan tactical overlay markers, 3D orthographic view, professional defense intelligence style.`;
+
+    try {
+      const payload = {
+        instances: { prompt: prompt },
+        parameters: { sampleCount: 1 }
+      };
+
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (!response.ok) throw new Error("Image Generation failed");
+      
+      const result = await response.json();
+      if (result.predictions && result.predictions[0]?.bytesBase64Encoded) {
+        setVisualUrl(`data:image/png;base64,${result.predictions[0].bytesBase64Encoded}`);
+        showToast("สร้างภาพแผนผังจำลองทางยุทธวิธีสำเร็จ", "success");
+      } else {
+        throw new Error("No image data found");
+      }
+    } catch (e) {
+      console.error(e);
+      showToast("ไม่สามารถสร้างแผนผังทางสายตาได้", "error");
+    } finally {
+      setIsGeneratingVisual(false);
+    }
+  };
+
+  // call Gemini 3.1 Flash for image understanding
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64Data = reader.result.split(',')[1];
+      setAnalysedImage(base64Data);
+      setAnalysedImagePreview(reader.result);
+      setImageAnalysisResult(null);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const analyzeSuspiciousImage = async () => {
+    if (!analysedImage) return;
+    setIsAnalyzingImage(true);
+    setImageAnalysisResult(null);
+
+    const systemPrompt = "คุณคือ 'ผู้เชี่ยวชาญตรวจสอบพยานหลักฐานและนิติวิทยาศาสตร์ทหารพรานและตำรวจชายแดน' หน้าที่ของคุณคือการอ่านประเมินภาพถ่ายสิ่งของ วัตถุต้องสงสัย ป้ายทะเบียน หรือแผนที่ภูมิประเทศเพื่อตรวจจับประเด็นเสี่ยงด้านอาวุธ สารเคมี บัญชียา และประเด็นสุ่มเสี่ยงกฎหมาย พ.ร.บ.อุ้มหายฯ";
+    const userPrompt = "กรุณาประเมินรูปภาพนี้อย่างละเอียด และสรุปให้สั้นกระชับเป็นข้อๆ: 1. สิ่งต้องสงสัยและระดับภัยคุกคาม 2. แนวปฏิบัติเข้าสกัดกั้นร่วมกับสุนัข K-9 3. การวางตำแหน่งกล้องบันทึกเหตุการณ์ (Body-cam) ไม่ให้ขัดต่อมาตรา 22";
+
+    const apiKey = getApiKey();
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+    try {
+      const payload = {
+        contents: [{
+          role: "user",
+          parts: [
+            { text: userPrompt },
+            {
+              inlineData: {
+                mimeType: "image/png",
+                data: analysedImage
+              }
+            }
+          ]
+        }],
+        systemInstruction: { parts: [{ text: systemPrompt }] }
+      };
+
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (!response.ok) throw new Error("Visual Analysis failed");
+      
+      const result = await response.json();
+      const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (text) {
+        setImageAnalysisResult(text);
+        showToast("วิเคราะห์วัตถุต้องสงสัยทางนิติวิทยาศาสตร์เรียบร้อย", "success");
+      }
+    } catch (e) {
+      console.error(e);
+      showToast("การวิเคราะห์ภาพล้มเหลวชั่วคราว", "error");
+    } finally {
+      setIsAnalyzingImage(false);
+    }
+  };
+
+  const loadMockImage = (type) => {
+    // Basic high-contrast abstract mock SVG strings as base64 to serve as placeholders
+    const mocks = {
+      plate: "iVBORw0KGgoAAAANSUhEUgAAAGQAAABkBAMAAACCb89AAAAAJ1BMVEUAAAD///9AgICAgICAwMCAsLCAr6+Arq6AsLCAsLCAsLCAsLCAsLCAsLCgRzVNAAAADHRSTlMAESIzRFVmd4iZqru8u9t7gQAAADNJREFUeN7twQEBAAAAgiD/r25IQAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8BclcAABg5H9qQAAAABJRU5ErkJggg==",
+      pack: "iVBORw0KGgoAAAANSUhEUgAAAGQAAABkBAMAAACCb89AAAAAJ1BMVEUAAAD///9AwMCAsLCAr6+Arq6AsLCAsLCgRzVNAAAADHRSTlMAESIzRFVmd4iZqru8u9t7gQAAADNJREFUeN7twQEBAAAAgiD/r25IQAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8BclcAABg5H9qQAAAABJRU5ErkJggg=="
+    };
+    setAnalysedImage(mocks[type]);
+    setAnalysedImagePreview(type === 'plate' ? 'https://images.unsplash.com/photo-1594913785162-e67853f23cb7?w=120&auto=format&fit=crop&q=60' : 'https://images.unsplash.com/photo-1543087903-1ac2ec7aa8c5?w=120&auto=format&fit=crop&q=60');
+    setImageAnalysisResult(null);
+    showToast("โหลดภาพจำลองวัตถุต้องสงสัยเสร็จสิ้น", "info");
+  };
+
+  const fetchScenarioWithAI = async () => {
+    setIsGeneratingScenario(true);
+    setScenarioError(null);
+    setVisualUrl(null); // Reset visual
+    const systemPrompt = "คุณคือศาสตราจารย์ยุทธวิธีตำรวจตระเวนชายแดนไทยและผู้เชี่ยวชาญ พ.ร.บ. ป้องกันการทรมานและอุ้มหายฯ หน้าที่ของคุณคือสร้างสถานการณ์สมมติที่ท้าทายหน้างานจริงแถบชายแดน พร้อมลำดับขั้นตอนปฏิบัติตามกฎหมายและยุทธวิธี 4 ขั้นตอนกระชับ";
+    const userPrompt = "โปรดสร้างสถานการณ์จำลองสำหรับการซ้อมตั้งด่านหรือลาดตระเวนชายแดนไทย 1 เรื่อง เช่น การพบลักลอบขนสารเคมี ยานพาหนะนักสืบเอกชนขัดขืน หรือสุนัขดมกลิ่นตรวจเตือนตู้สินค้า และบอกพฤติการณ์บริบทสั้นๆ จากนั้นระบุขั้นตอนการบริหารยุทธวิธีและป้องกันความผิดทางกฎหมายจำนวน 4 ข้อ ตอบกลับด้วยโครงสร้าง JSON ที่ระบุหัวข้อ (title), บริบทเหตุการณ์ (context), และรายการขั้นตอน (steps)";
+
+    const apiKey = getApiKey();
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+    let delay = 1000;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        const payload = {
+          contents: [{ parts: [{ text: userPrompt }] }],
+          systemInstruction: { parts: [{ text: systemPrompt }] },
+          generationConfig: {
+            responseMimeType: "application/json",
+            responseSchema: {
+              type: "OBJECT",
+              properties: {
+                title: { type: "STRING" },
+                context: { type: "STRING" },
+                steps: {
+                  type: "ARRAY",
+                  items: { type: "STRING" }
+                }
+              },
+              required: ["title", "context", "steps"]
+            }
+          }
+        };
+
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) throw new Error("การส่งคำขอไปยัง Gemini ล้มเหลว");
+        
+        const result = await response.json();
+        const responseText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+        
+        if (responseText) {
+          const parsed = JSON.parse(responseText);
+          setCurrentScenario({
+            title: parsed.title,
+            context: parsed.context,
+            steps: parsed.steps.map((stepText, idx) => ({ text: stepText, key: `ai-scenario-${idx}` }))
+          });
+          setScenarioStepStatus({});
+          showToast("สร้างสถานการณ์ยุทธวิธีด้วย AI สำเร็จ", "success");
+          
+          // Trigger Visual Blueprint sketch drawing with Imagen
+          generateScenarioVisual(parsed.title, parsed.context);
+          break;
+        } else {
+          throw new Error("ไม่มีข้อมูลส่งกลับจาก API");
+        }
+      } catch (err) {
+        console.warn(`Attempt ${attempt + 1} failed:`, err);
+        if (attempt === 2) {
+          setScenarioError("ไม่สามารถติดต่อข่ายวิเคราะห์ข้อมูล Gemini ได้ โปรดเช็คสัญญาณอินเทอร์เน็ต");
+          showToast("สร้างสถานการณ์ล้มเหลว", "error");
+        } else {
+          await new Promise(resolve => setTimeout(resolve, delay));
+          delay *= 2;
+        }
+      } finally {
+        if (attempt === 2 || currentScenario) {
+          setIsGeneratingScenario(false);
+        }
+      }
+    }
+  };
+
+  const consultAITactical = async () => {
+    if (!consultQuery.trim()) return;
+    setIsConsulting(true);
+    setConsultResult(null);
+    setConsultError(null);
+
+    const systemPrompt = "คุณคือ 'ผู้ช่วยที่ปรึกษายุทธวิธีชายแดน (Sentinel AI)' หน้าที่ของคุณคือให้คำปรึกษาแผนปฏิบัติการยุทธวิธีเฉพาะหน้าและการปฏิบัติตาม พ.ร.บ. ป้องกันและปราบปรามการทรมานและอุ้มหายฯ พ.ศ. 2565 อย่างละเอียดและปลอดภัยที่สุดแก่ตำรวจตระเวนชายแดนไทย";
+    const userPrompt = `มีรายงานพฤติการณ์ฉุกเฉินดังนี้: "${consultQuery}" 
+    โปรดวิเคราะห์ความเสี่ยงและเขียนคู่มือระงับเหตุเฉพาะหน้า (SOP) แบ่งเป็นข้อๆ ชัดเจน (กฎหมาย, ความปลอดภัยกำลังพล, การจัดการกล้องบันทึกและสุนัขใช้งาน)`;
+
+    const apiKey = getApiKey();
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+    let delay = 1000;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        const payload = {
+          contents: [{ parts: [{ text: userPrompt }] }],
+          systemInstruction: { parts: [{ text: systemPrompt }] }
+        };
+
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) throw new Error("การวิเคราะห์ล้มเหลว");
+        
+        const result = await response.json();
+        const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+        
+        if (text) {
+          setConsultResult(text);
+          showToast("การวิเคราะห์ยุทธวิธีเฉพาะหน้าพร้อมใช้งาน", "success");
+          break;
+        } else {
+          throw new Error("ไม่มีข้อมูลจากคู่หู AI");
+        }
+      } catch (err) {
+        console.warn(`Attempt ${attempt + 1} failed:`, err);
+        if (attempt === 2) {
+          setConsultError("ระบบสัญญาณอัจฉริยะล้มเหลว ไม่สามารถปรึกษาฐานข้อมูลกฎหมายจำลองได้");
+        } else {
+          await new Promise(resolve => setTimeout(resolve, delay));
+          delay *= 2;
+        }
+      } finally {
+        if (attempt === 2 || consultResult) {
+          setIsConsulting(false);
+        }
+      }
+    }
+  };
+
+  const auditPt1Form = async () => {
+    setIsAuditing(true);
+    setAuditResult(null);
+    setAuditError(null);
+
+    const systemPrompt = "คุณคือ 'พนักงานอัยการพิเศษ ฝ่ายบังคับการกฎหมายตาม พ.ร.บ.อุ้มหายฯ' หน้าที่ตรวจสอบแบบบันทึกการควบคุมตัว (ปท.1) เพื่อค้นหาความสุ่มเสี่ยง จุดบกพร่อง และประเมินพฤติการณ์กล้องบันทึกขัดข้อง";
+    const userPrompt = `กรุณาตรวจสอบแบบ ปท.1 อิเล็กทรอนิกส์ดังต่อไปนี้:
+    - เจ้าหน้าที่เขียนคำร้อง: ${pt1Form.officerRank} ${pt1Form.officerName}
+    - บุคคลผู้ถูกควบคุมตัว: ${pt1Form.detaineeName} (ID: ${pt1Form.detaineeID}, อายุ: ${pt1Form.detaineeAge} ปี)
+    - สถานที่และพฤติการณ์แวดล้อม: ${pt1Form.location}
+    - บันทึกการพรรณนารูปลักษณ์ภาพถ่าย: ${pt1Form.photoPlaceholderDesc}
+    - คำชี้แจงเหตุสุดวิสัยทางเทคนิค (กล้องขัดข้อง): ${pt1Form.forceMejureExplanation}
+
+    โปรดส่งข้อเสนอแนะเชิงลึก โดยระบุว่า เอกสารฉบับนี้มีข้อกฎหมายใดที่เสี่ยง (เช่น ความชัดเจนเหตุผลกล้องดับ, การระบุรายละเอียดผู้ถูกกักตัว) และแนวทางการแก้ไขด่วนที่สุดก่อนส่งอัยการกลาง`;
+
+    const apiKey = getApiKey();
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+    let delay = 1000;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        const payload = {
+          contents: [{ parts: [{ text: userPrompt }] }],
+          systemInstruction: { parts: [{ text: systemPrompt }] }
+        };
+
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) throw new Error("การตรวจสอบอัยการขัดข้อง");
+        
+        const result = await response.json();
+        const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+        
+        if (text) {
+          setAuditResult(text);
+          showToast("การประเมินความสุ่มเสี่ยงกฎหมายจากอัยการ AI เสร็จสิ้น", "success");
+          break;
+        } else {
+          throw new Error("ไม่มีบันทึกผลการตรวจสอบทางกฎหมาย");
+        }
+      } catch (err) {
+        console.warn(`Attempt ${attempt + 1} failed:`, err);
+        if (attempt === 2) {
+          setAuditError("สัญญาณเครือข่ายอัยการหลักปิดกั้นการตรวจสอบ พยายามใหม่อีกครั้งภายหลัง");
+        } else {
+          await new Promise(resolve => setTimeout(resolve, delay));
+          delay *= 2;
+        }
+      } finally {
+        if (attempt === 2 || auditResult) {
+          setIsAuditing(false);
+        }
+      }
+    }
+  };
+
+
+  const getEvaluationResult = (rel, cert) => {
+    const combined = `${rel}-${cert}`;
+    const highAlerts = ["ก-1", "ก-2", "ข-1", "ข-2"];
+    const moderateAlerts = ["ก-3", "ข-3", "ค-1", "ค-2", "ค-3"];
+    const suspectAlerts = ["ง-1", "ง-2", "ง-3", "จ-1", "จ-2", "ฉ-1"];
+    
+    if (highAlerts.includes(combined)) {
+      return {
+        level: "ก-1 / ข-2: มีความสอดคล้องสูงยิ่ง (Highly Actionable)",
+        color: "bg-emerald-950 border-emerald-500 text-emerald-300",
+        desc: "ข่าวกรองมีแหล่งกำเนิดมั่นคง ความน่าเชื่อถือยืนยันแล้ว สามารถเปิดปฏิบัติการจู่โจม/สกัดกั้นระดับยุทธวิธีได้ทันที ควรกำลังพลติดอาวุธครบมือ"
+      };
+    } else if (moderateAlerts.includes(combined)) {
+      return {
+        level: "ค-2 / ค-3: ข้อมูลระดับปานกลาง (Actionable with Caution)",
+        color: "bg-amber-950 border-amber-500 text-amber-300",
+        desc: "แหล่งข่าวมีประโยชน์ระดับหนึ่ง แต่อาจขาดพยานแวดล้อมสนับสนุน ให้จัดตั้งจุดตรวจชั่วคราวและเฝ้าสังเกตการณ์อย่างรัดกุม ห้ามประมาท"
+      };
+    } else if (suspectAlerts.includes(combined)) {
+      return {
+        level: "ง-1 / จ-2: ข้อมูลต้องสงสัยสูง (Suspicious / Unverified)",
+        color: "bg-orange-950 border-orange-500 text-orange-300",
+        desc: "แหล่งข่าวประวัติไม่ค่อยดี ข้อมูลอาจถูกป้อนเพื่อเบี่ยงเบนความสนใจ ให้ใช้ชุด Spotter นอกเครื่องแบบตรวจสอบล่วงหน้าเพื่อกรองข้อเท็จจริง"
+      };
+    } else {
+      return {
+        level: "ระดับต่ำ / ประเมินไม่ได้ (Low Priority / Unusable)",
+        color: "bg-slate-800 border-slate-600 text-slate-300",
+        desc: "ข้อมูลไม่น่าเป็นไปได้ หรือมีระดับขัดแย้งเชิงนโยบายสูงมาก แนะนำให้ส่งเรื่องคืนฝ่ายวิเคราะห์และเฝ้าระวังพื้นที่ควบคุมตามรอบปกติ"
+      };
+    }
+  };
+
+  // In-depth check point recommendation engine based on state
+  const getCheckpointRecommendation = () => {
+    if (configTerrain === 'highway') {
+      return {
+        buffer: "300 - 500 เมตร (เนื่องจากความเร็วรถยนต์สูงมาก)",
+        spotter: "ห่างจากด่านค้นหลัก 1 กิโลเมตรขึ้นไป ซุ่มบนสะพานลอยหรือร่มไม้ริมทาง",
+        force: "กำลังพลขั้นต่ำ 12 นาย แบ่งเป็น 4 ทีมหมุนเวียน (Spotter, Contact, Cover, Mobile Sandwich)",
+        barrier: "เครื่องกีดขวางเหล็กพับได้ แผงลดความเร็วซิกแซก ป้ายไฟ LED ขนาดใหญ่ล่วงหน้า",
+        k9Shift: "30 นาทีสลับพัก (เนื่องจากสภาพฝุ่นควันและลมร้อนจากยานพาหนะขนาดใหญ่)",
+        tip: "เน้นการเปิดกล้อง Body-Cam ให้มองเห็นช่องทางสัญจรคู่ขนาน ป้องกันผู้ต้องหาเร่งเครื่องหลบหนีออกช่องคู่ขนาน"
+      };
+    } else if (configTerrain === 'secondary') {
+      return {
+        buffer: "150 - 200 เมตร (ความเร็วรถยนต์ปานกลาง)",
+        spotter: "ห่างจากด่าน 500 เมตร หลบมุมโค้งหรือร้านค้าชุมชน",
+        force: "กำลังพล 6 - 8 นาย ประสานงานร่วม อส., ผรส. ในพื้นที่",
+        barrier: "กรวยยางส้ม แบริเออร์น้ำพลาสติก แผงเหล็กกั้นเลื่อน",
+        k9Shift: "1 ชั่วโมงสลับพัก (สอดส่องรถกระบะขนพืชผลเกษตรอำพรางยาเสพติด)",
+        tip: "ตรวจตรากลิ่นอำพรางประเภท มูลสัตว์ ผลไม้มีกลิ่นฉุน หรือสารเคมีดับกลิ่นเป็นพิเศษ โดยให้สุนัขตรวจดมอย่างเป็นระบบ"
+      };
+    } else {
+      return {
+        buffer: "50 - 100 เมตร (ความเร็วต่ำ เน้นความคล่องตัวและซุ่มพราง)",
+        spotter: "ห่างออกไป 150-200 เมตร ตามโขดหินหรือพุ่มไม้หนา",
+        force: "กำลังพลยุทธวิธี ตชด. 4 - 6 นาย พร้อมอาวุธยาวติดกล้องช่วยเล็ง",
+        barrier: "เครื่องกีดขวางพกพา (Spike strips / โซ่หนามแหลมขว้าง), แผงพับเบา",
+        k9Shift: "2 ชั่วโมงสลับพัก (พื้นที่ป่าร่มรื่นกว่าแต่ต้องระวังแมลงสัตว์มีพิษทำร้าย K-9)",
+        tip: "ให้ความสำคัญกับ DNA Trailing (การสะกดรอยเป้าหมายเดินเท้าที่ละทิ้งรถยนต์วิ่งหลบหนีเข้าแนวป่า)"
+      };
+    }
+  };
+
+  const toggleScenarioStep = (key) => {
+    setScenarioStepStatus((prev) => ({
+      ...prev,
+      [key]: !prev[key]
+    }));
+  };
+
+  const handlePt1Submit = (e) => {
+    e.preventDefault();
+    setPt1Form(prev => ({ ...prev, submitted: true }));
+    showToast("เอกสารถูกสร้างขึ้นในระบบเสมือนจริง", "success");
+  };
+
+  const handlePt1Reset = () => {
+    setPt1Form({
+      officerName: '',
+      officerRank: '',
+      detaineeName: '',
+      detaineeID: '',
+      detaineeAge: '',
+      location: '',
+      photoPlaceholderDesc: '',
+      forceMejureExplanation: '',
+      witnessName: '',
+      submitted: false
+    });
+    setAuditResult(null);
+    setAuditError(null);
+  };
+
+
+  const handleStartQuiz = (e) => {
+    e.preventDefault();
+    if (!quizPlayerName.trim()) return;
+    setQuizStarted(true);
+    setCurrentQuestionIndex(0);
+    setPlayerScore(0);
+    setAiScore(0);
+    setSelectedOption(null);
+    setQuizPhase('playing');
+    setQuizHistory([]);
+  };
+
+  const handleQuizTimeout = () => {
+    setQuizPhase('reveal');
+    setAiScore((prev) => prev + 1);
+    setQuizHistory((prev) => [...prev, { status: 'timeout', q: currentQuestionIndex }]);
+    
+    setTimeout(() => {
+      advanceQuiz();
+    }, 2500);
+  };
+
+  const handleOptionSelect = (optionIndex) => {
+    if (quizPhase !== 'playing') return;
+    if (timerRef.current) clearInterval(timerRef.current);
+    
+    setSelectedOption(optionIndex);
+    setQuizPhase('reveal');
+
+    const correctAns = QUIZ_QUESTIONS[currentQuestionIndex].answer;
+    if (optionIndex === correctAns) {
+      setPlayerScore((prev) => prev + 1);
+      setQuizHistory((prev) => [...prev, { status: 'correct', q: currentQuestionIndex }]);
+    } else {
+      setAiScore((prev) => prev + 1);
+      setQuizHistory((prev) => [...prev, { status: 'wrong', q: currentQuestionIndex }]);
+    }
+
+    setTimeout(() => {
+      advanceQuiz();
+    }, 2500);
+  };
+
+  const advanceQuiz = () => {
+    setSelectedOption(null);
+    if (currentQuestionIndex < QUIZ_QUESTIONS.length - 1) {
+      setCurrentQuestionIndex((prev) => prev + 1);
+      setQuizPhase('playing');
+    } else {
+      setQuizPhase('summary');
+    }
+  };
+
+  const restartQuiz = () => {
+    setQuizStarted(false);
+    setQuizPhase('idle');
+    setPlayerScore(0);
+    setAiScore(0);
+    setCurrentQuestionIndex(0);
+    setSelectedOption(null);
+    setQuizHistory([]);
+  };
+
+  const toggleChecklist = (id, type) => {
+    if (type === 'interdiction') {
+      setChecklistInterdiction(prev => prev.map(item => item.id === id ? { ...item, checked: !item.checked } : item));
+    } else if (type === 'jointK9') {
+      setChecklistJointK9(prev => prev.map(item => item.id === id ? { ...item, checked: !item.checked } : item));
+    } else if (type === 'legalEvidence') {
+      setChecklistLegalEvidence(prev => prev.map(item => item.id === id ? { ...item, checked: !item.checked } : item));
+    }
+  };
+
+  const handleCourtOptionSelect = (idx) => {
+    if (courtStep !== 0) return;
+    setSelectedCourtOption(idx);
+    const scoreGain = courtQuestions[courtQuestionIndex].options[idx].score;
+    setCourtScore(prev => prev + scoreGain);
+    setCourtStep(1);
+  };
+
+  const advanceCourtQuestion = () => {
+    setSelectedCourtOption(null);
+    setCourtStep(0);
+    if (courtQuestionIndex < courtQuestions.length - 1) {
+      setCourtQuestionIndex(prev => prev + 1);
+    } else {
+      // Completed, loop back or reset
+      showToast(`การประเมินการต่อสู้ชั้นศาลเสร็จสิ้น คะแนนสะสม: ${courtScore} คะแนน`, "info");
+      setCourtQuestionIndex(0);
+      setCourtScore(0);
+    }
+  };
+
+  const renderAIResponse = (text) => {
+    if (!text) return null;
+    return text.split('\n').map((line, idx) => {
+      if (line.startsWith('###') || line.startsWith('**')) {
+        return <p key={idx} className="font-bold text-slate-100 text-xs mt-2 mb-1">{line.replace(/[#*]/g, '')}</p>;
+      }
+      if (line.trim().startsWith('-') || line.trim().startsWith('*')) {
+        return <li key={idx} className="text-[11px] text-slate-300 list-disc ml-4 my-0.5">{line.substring(2)}</li>;
+      }
+      return <p key={idx} className="text-[11px] text-slate-300 leading-normal my-1">{line}</p>;
+    });
+  };
+
+
+  return (
+    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans flex justify-center p-0 md:p-4">
+      {/* Dynamic Toast Message Box */}
+      {customToast && (
+        <div className={`fixed top-4 z-50 mx-4 max-w-[400px] w-[90%] p-3 rounded-xl border flex items-center gap-2.5 shadow-2xl animate-bounce ${
+          customToast.type === 'success' 
+            ? 'bg-emerald-950 border-emerald-500 text-emerald-300' 
+            : customToast.type === 'error'
+              ? 'bg-red-950 border-red-500 text-red-300'
+              : 'bg-blue-950 border-blue-500 text-blue-300'
+        }`}>
+          <Info className="w-4.5 h-4.5 shrink-0" />
+          <span className="text-xs font-medium leading-relaxed">{customToast.message}</span>
+        </div>
+      )}
+
+      {/* Gemini API Key Setup Modal */}
+      {showApiKeySetup && (
+        <div className="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="w-full max-w-sm bg-slate-900 border border-slate-700 rounded-2xl p-5 space-y-3 shadow-2xl">
+            <div className="flex items-center gap-2 text-blue-400">
+              <Lock className="w-5 h-5" />
+              <h3 className="font-bold text-sm text-slate-100">ตั้งค่า Gemini API Key</h3>
+            </div>
+            <p className="text-[11px] text-slate-400 leading-relaxed">
+              แอปนี้เรียกใช้ Gemini API โดยตรงจากเบราว์เซอร์ของคุณ จึงต้องใช้ API Key ส่วนตัวสำหรับฟีเจอร์ AI ทั้งหมด (ที่ปรึกษายุทธวิธี, จำลองสถานการณ์, วิเคราะห์ภาพ, สังเคราะห์เสียง) คีย์จะถูกเก็บไว้ในเบราว์เซอร์เครื่องนี้เท่านั้น ไม่ถูกส่งไปที่อื่นนอกจาก Google
+            </p>
+            <input
+              type="password"
+              value={apiKeyDraft}
+              onChange={(e) => setApiKeyDraft(e.target.value)}
+              placeholder="AIza..."
+              className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs text-slate-200 focus:border-blue-500 focus:outline-none font-mono"
+            />
+            <div className="flex gap-2">
+              <button onClick={() => setShowApiKeySetup(false)} className="flex-1 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs font-bold transition-all">
+                ปิดไว้ก่อน
+              </button>
+              <button onClick={saveApiKey} className="flex-1 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-bold transition-all">
+                บันทึก
+              </button>
+            </div>
+            <a href="https://aistudio.google.com/apikey" target="_blank" rel="noreferrer" className="text-[10px] text-blue-400 underline block text-center">
+              รับ API Key ฟรีจาก Google AI Studio
+            </a>
+          </div>
+        </div>
+      )}
+
+      {/* Container simulating a vertical military tactical device */}
+      <div className="w-full max-w-[480px] bg-slate-900 border border-slate-700/80 md:rounded-3xl shadow-2xl flex flex-col overflow-hidden relative">
+        
+        {/* Top Tactical Status Bar */}
+        <div className="bg-slate-950 px-4 py-2 flex justify-between items-center text-xs border-b border-slate-800 text-slate-400">
+          <div className="flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span className="font-mono tracking-wider">TACTICAL TERMINAL v5.0-LIVE</span>
+          </div>
+          <div className="flex items-center gap-2 font-mono">
+            <button
+              onClick={() => { setApiKeyDraft(getApiKey()); setShowApiKeySetup(true); }}
+              className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-slate-900 border border-slate-800 hover:border-blue-500 text-slate-400 hover:text-blue-400 transition-colors"
+            >
+              <Lock className="w-3 h-3" />
+              <span>API KEY</span>
+            </button>
+            <span className={getApiKey() ? "text-emerald-400" : "text-red-400"}>{getApiKey() ? '⚡ Ready' : '⚠ Not Set'}</span>
+          </div>
+        </div>
+
+        {/* Main App Header with Metallic Silver Effect */}
+        <header className="bg-gradient-to-b from-slate-900 to-slate-950 p-4 border-b border-slate-800">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 bg-blue-900/40 rounded-xl border border-blue-500/30 text-blue-400 shadow-inner">
+              <Shield className="w-6 h-6" />
+            </div>
+            <div>
+              <h1 className="text-xl font-black tracking-wide bg-gradient-to-r from-slate-200 via-zinc-400 to-slate-100 bg-clip-text text-transparent">
+                SENTINEL TACTICAL GUIDE
+              </h1>
+              <p className="text-[10px] text-blue-400 font-medium tracking-widest uppercase">
+                Border Interdiction Assistant
+              </p>
+            </div>
+          </div>
+        </header>
+
+        {/* Dynamic Navigation Tabs */}
+        <nav className="flex bg-slate-950/80 p-1 border-b border-slate-800 overflow-x-auto scrollbar-none sticky top-0 z-10 backdrop-blur-md">
+          {[
+            { id: 'dashboard', label: 'ข่าวกรอง K-9', icon: Dog },
+            { id: 'checkpoint', label: 'ยุทธวิธีด่าน', icon: Map },
+            { id: 'checklist', label: 'SOP ร่วม', icon: CheckSquare },
+            { id: 'legal', label: 'กฎหมายอุ้มหาย', icon: FileText },
+            { id: 'assistant', label: 'ผู้ช่วย AI / ปท.1', icon: Brain },
+            { id: 'quiz', label: 'ดวล ดาบแหลม', icon: Award }
+          ].map((tab) => {
+            const IconComponent = tab.icon;
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex flex-col items-center gap-1 px-3.5 py-2 text-[10px] font-semibold tracking-wider rounded-lg transition-all whitespace-nowrap flex-1 ${
+                  isActive 
+                    ? 'bg-blue-600/20 text-blue-400 border border-blue-500/30 shadow-md' 
+                    : 'text-slate-400 hover:bg-slate-800/50 border border-transparent'
+                }`}
+              >
+                <IconComponent className={`w-4.5 h-4.5 ${isActive ? 'text-blue-400' : 'text-slate-400'}`} />
+                <span>{tab.label}</span>
+              </button>
+            );
+          })}
+        </nav>
+
+        {/* Scrollable Content Container */}
+        <main className="flex-1 overflow-y-auto p-4 space-y-4 pb-20">
+
+          {/* TAB 1: DASHBOARD & K-9 INTEL */}
+          {activeTab === 'dashboard' && (
+            <div className="space-y-4 animate-fadeIn">
+              
+              {/* Border Interdiction Tactics Introduction Banner */}
+              <section className="bg-gradient-to-r from-blue-950 to-slate-950 rounded-xl p-3.5 border border-blue-800/40 shadow-md">
+                <div className="flex items-center gap-2 mb-2">
+                  <Activity className="w-5 h-5 text-blue-400 animate-pulse" />
+                  <span className="text-[10px] text-blue-400 font-mono tracking-wider uppercase font-bold">Border Interdiction Framework</span>
+                </div>
+                <h3 className="font-extrabold text-sm text-slate-100 mb-1">
+                  ยุทธวิธีการสกัดกั้นยาเสพติดแนวชายแดน ร่วมกับ K-9
+                </h3>
+                <p className="text-[11px] text-slate-400 leading-relaxed">
+                  ภายใต้ <strong className="text-blue-300 font-medium">พ.ร.บ. ป้องกันอุ้มหายฯ พ.ศ. 2565</strong> เจ้าหน้าที่ต้องปฏิบัติงานสกัดกั้นยาเสพติดร่วมกับสุนัขใช้งาน (K-9) อย่างเป็นนิติวิทยาศาสตร์ บันทึกพยานหลักฐานด้วยวิดีโอต่อเนื่องห้ามซ้อมทรมาน และห้ามข่มขู่ในรูปแบบเชิงจิตวิทยาอย่างเด็ดขาด
+                </p>
+              </section>
+
+              {/* Section 1: Data Evaluation Tool */}
+              <section className="bg-slate-800/40 rounded-xl p-3.5 border border-slate-700/60 shadow-lg">
+                <div className="flex items-center gap-2 mb-3">
+                  <Compass className="w-5 h-5 text-blue-400" />
+                  <h3 className="font-bold text-sm text-slate-200">เครื่องมือวิเคราะห์ระดับความน่าเชื่อถือข่าวสาร</h3>
+                </div>
+                
+                <p className="text-xs text-slate-400 mb-4 leading-relaxed">
+                  ประเมินข่าวกรองเพื่อตรวจสอบระดับความถูกต้องของเบาะแสยาเสพติดและภัยความมั่นคงแนวชายแดน
+                </p>
+
+                {/* Grid for Reliability (ก-ฉ) */}
+                <div className="space-y-3">
+                  <div>
+                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1.5">
+                      1. ความน่าเชื่อถือของแหล่งข่าว (Reliability)
+                    </label>
+                    <div className="grid grid-cols-6 gap-1">
+                      {DATA_RELIABILITY_CODES.map((item) => (
+                        <button
+                          key={item.code}
+                          onClick={() => setSelectedReliability(item.code)}
+                          className={`py-1.5 rounded-md text-xs font-bold transition-all border ${
+                            selectedReliability === item.code 
+                              ? 'bg-blue-600 border-blue-400 text-white shadow-md scale-105' 
+                              : 'bg-slate-900 border-slate-800 text-slate-400 hover:bg-slate-800'
+                          }`}
+                          title={item.desc}
+                        >
+                          {item.code}
+                        </button>
+                      ))}
+                    </div>
+                    <div className="text-[10px] bg-slate-900/60 p-2 rounded mt-1.5 text-slate-300 border border-slate-800">
+                      <strong>ระดับ {selectedReliability}:</strong> {DATA_RELIABILITY_CODES.find(i => i.code === selectedReliability)?.desc}
+                    </div>
+                  </div>
+
+                  {/* Grid for Certainty (1-6) */}
+                  <div>
+                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1.5">
+                      2. ความถูกต้องแน่นอนของข้อมูล (Certainty)
+                    </label>
+                    <div className="grid grid-cols-6 gap-1">
+                      {DATA_CERTAINTY_CODES.map((item) => (
+                        <button
+                          key={item.code}
+                          onClick={() => setSelectedCertainty(item.code)}
+                          className={`py-1.5 rounded-md text-xs font-bold transition-all border ${
+                            selectedCertainty === item.code 
+                              ? 'bg-blue-600 border-blue-400 text-white shadow-md scale-105' 
+                              : 'bg-slate-900 border-slate-800 text-slate-400 hover:bg-slate-800'
+                          }`}
+                          title={item.desc}
+                        >
+                          {item.code}
+                        </button>
+                      ))}
+                    </div>
+                    <div className="text-[10px] bg-slate-900/60 p-2 rounded mt-1.5 text-slate-300 border border-slate-800">
+                      <strong>ระดับ {selectedCertainty}:</strong> {DATA_CERTAINTY_CODES.find(i => i.code === selectedCertainty)?.desc}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Evaluation Actionable Output */}
+                <div className={`mt-4 p-3 rounded-xl border-2 transition-all ${getEvaluationResult(selectedReliability, selectedCertainty).color}`}>
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <Zap className="w-4 h-4 text-amber-400" />
+                    <span className="text-xs font-bold uppercase tracking-wider">ผลประเมินยุทธวิธี</span>
+                  </div>
+                  <h4 className="font-bold text-sm mb-1">
+                    {getEvaluationResult(selectedReliability, selectedCertainty).level}
+                  </h4>
+                  <p className="text-[11px] leading-relaxed opacity-90">
+                    {getEvaluationResult(selectedReliability, selectedCertainty).desc}
+                  </p>
+                </div>
+              </section>
+
+              {/* Agency Data */}
+              <section className="bg-slate-800/40 rounded-xl p-3.5 border border-slate-700/60 shadow-lg">
+                <div className="flex items-center gap-2 mb-3">
+                  <Users className="w-5 h-5 text-blue-400" />
+                  <h3 className="font-bold text-sm text-slate-200">หน่วยงานร่วมปฏิบัติการชายแดน</h3>
+                </div>
+                <div className="space-y-2.5">
+                  {AGENCY_DATA.map((agency) => (
+                    <div key={agency.name} className="bg-slate-900/60 p-2.5 rounded-lg border border-slate-800/80">
+                      <div className="text-xs font-bold text-blue-300 mb-1">{agency.name}</div>
+                      <p className="text-[11px] text-slate-300 leading-relaxed">{agency.role}</p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              {/* K9 Biology */}
+              <section className="bg-slate-800/40 rounded-xl p-3.5 border border-slate-700/60 shadow-lg">
+                <div className="flex items-center gap-2 mb-3">
+                  <Dog className="w-5 h-5 text-blue-400" />
+                  <h3 className="font-bold text-sm text-slate-200">ชีววิทยาและขีดความสามารถสุนัขใช้งาน (K-9)</h3>
+                </div>
+                
+                <p className="text-xs text-slate-400 mb-4 leading-relaxed">
+                  สุนัขตำรวจตระเวนชายแดนมีข้อได้เปรียบทางด้านสรีรวิทยาที่เป็นเลิศ ซึ่งต้องได้รับการตระหนักในแผนยุทธวิธี
+                </p>
+
+                {/* Biological Specs Grid */}
+                <div className="grid grid-cols-2 gap-2 mb-4">
+                  <div className="bg-slate-900/70 p-2.5 rounded-lg border border-slate-800 text-center">
+                    <span className="text-[10px] text-slate-400 block uppercase">ประสาทการดมกลิ่น</span>
+                    <strong className="text-base text-emerald-400 font-mono block mt-1">{K9_BIO.smell}</strong>
+                  </div>
+                  <div className="bg-slate-900/70 p-2.5 rounded-lg border border-slate-800 text-center">
+                    <span className="text-[10px] text-slate-400 block uppercase">ประสาทการได้ยิน</span>
+                    <strong className="text-base text-blue-400 font-mono block mt-1">{K9_BIO.hearing}</strong>
+                  </div>
+                  <div className="bg-slate-900/70 p-2.5 rounded-lg border border-slate-800 text-center">
+                    <span className="text-[10px] text-slate-400 block uppercase">ทัศนวิสัยสายตา</span>
+                    <strong className="text-base text-purple-400 font-mono block mt-1">{K9_BIO.vision}</strong>
+                  </div>
+                  <div className="bg-slate-900/70 p-2.5 rounded-lg border border-slate-800 text-center">
+                    <span className="text-[10px] text-slate-400 block uppercase">สติปัญญาเปรียบเทียบ</span>
+                    <strong className="text-base text-amber-400 font-mono block mt-1">{K9_BIO.intelligence}</strong>
+                  </div>
+                </div>
+
+                {/* K-9 Classifications */}
+                <div className="space-y-3">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">
+                    การแบ่งกลุ่มประเภทสุนัขใช้งาน (Classifications)
+                  </label>
+                  {K9_BIO.categories.map((cat, index) => (
+                    <div key={index} className="p-2.5 bg-slate-900/30 rounded-lg border border-slate-800 text-xs">
+                      <div className="font-bold text-slate-200 mb-1 flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                        {cat.title}
+                      </div>
+                      <p className="text-[11px] text-slate-400 leading-relaxed">{cat.desc}</p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Search SOP Info */}
+                <div className="bg-blue-950/20 border border-blue-900/60 rounded-lg p-3 mt-4">
+                  <h4 className="text-xs font-bold text-blue-300 mb-1.5 flex items-center gap-1">
+                    <Info className="w-4 h-4 text-blue-400" />
+                    ยุทธวิธีการตรวจสแกน และ DNA Trailing
+                  </h4>
+                  <ul className="space-y-1.5 text-[11px] text-slate-300 leading-relaxed list-disc list-inside">
+                    <li><strong className="text-slate-100">DNA hand-tap:</strong> แตะมือที่ท้ายรถคู่สงสัยเพื่อฝากดีเอ็นเอยืนยันความเชื่อมโยงกับกำลังพล</li>
+                    <li><strong className="text-slate-100">45-Degree Safe Entry:</strong> การเดินเข้าตัวรถด้านคนขับจากจุดอับสายตา 45 องศาเพื่อป้องกันภัย</li>
+                    <li><strong className="text-slate-100">10% Mechanical check:</strong> ใช้เครื่องมือกลตรวจสอบสุ่มตัวอย่างเพิ่มขึ้น 10% ป้องกันจุดอับการดมกลิ่น</li>
+                  </ul>
+                </div>
+              </section>
+
+            </div>
+          )}
+
+          {/* TAB 2: CHECKPOINT OPERATIONS & LAYOUT */}
+          {activeTab === 'checkpoint' && (
+            <div className="space-y-4 animate-fadeIn">
+              
+              {/* Section 1: Checkpoint Classifications */}
+              <section className="bg-slate-800/40 rounded-xl p-3.5 border border-slate-700/60 shadow-lg">
+                <div className="flex items-center gap-2 mb-3">
+                  <Shield className="w-5 h-5 text-blue-400" />
+                  <h3 className="font-bold text-sm text-slate-200">ประเภทจุดควบคุมความมั่นคงตามกฎหมาย</h3>
+                </div>
+                
+                <div className="grid grid-cols-1 gap-2.5 text-xs">
+                  <div className="p-3 bg-slate-900/60 rounded-lg border border-slate-800">
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="font-bold text-emerald-400">ด่านตรวจ (Checkpoint ถาวร)</span>
+                      <span className="text-[9px] bg-emerald-950/80 text-emerald-300 border border-emerald-800 px-1.5 py-0.5 rounded">24 ชั่วโมง</span>
+                    </div>
+                    <p className="text-[11px] text-slate-400 leading-relaxed">
+                      ได้รับอนุมัติผ่านที่ประชุมคณะรัฐมนตรี (ครม.) มีการติดตั้งสิ่งก่อสร้าง อุปกรณ์ป้องกัน อาคารตรวจค้นถาวร
+                    </p>
+                  </div>
+
+                  <div className="p-3 bg-slate-900/60 rounded-lg border border-slate-800">
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="font-bold text-blue-400">จุดตรวจ (Temporary Point)</span>
+                      <span className="text-[9px] bg-blue-950/80 text-blue-300 border border-blue-800 px-1.5 py-0.5 rounded">ชั่วคราวตามวาระ</span>
+                    </div>
+                    <p className="text-[11px] text-slate-400 leading-relaxed">
+                      ได้รับอนุมัติจากผู้บังคับการตำรวจภูธรจังหวัดหรือผู้บัญชาการ มีกำหนดช่วงเวลาทำงานและพิกัดชัดเจน
+                    </p>
+                  </div>
+
+                  <div className="p-3 bg-slate-900/60 rounded-lg border border-slate-800">
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="font-bold text-amber-400">จุดสกัด / Frog Jump</span>
+                      <span className="text-[9px] bg-amber-950/80 text-amber-300 border border-amber-800 px-1.5 py-0.5 rounded">10-20 นาที</span>
+                    </div>
+                    <p className="text-[11px] text-slate-400 leading-relaxed">
+                      จุดสกัดเคลื่อนที่เร็ว (Frog Jump) เน้นตั้งเร็ว รวบตัวเป้าหมาย และย้ายภายใน 10-20 นาทีเพื่อป้องกันไม่ให้ข่าวรั่วไหล
+                    </p>
+                  </div>
+                </div>
+              </section>
+
+              {/* In-depth Checkpoint Setup Recommendations Engine */}
+              <section className="bg-slate-800/40 rounded-xl p-3.5 border border-slate-700/60 shadow-lg">
+                <div className="flex items-center gap-2 mb-2">
+                  <Layers className="w-5 h-5 text-amber-400" />
+                  <h3 className="font-bold text-sm text-slate-200">เครื่องมือคำนวณและประเมินการตั้งด่านเชิงลึก</h3>
+                </div>
+                <p className="text-xs text-slate-400 mb-3 leading-relaxed">
+                  ปรับตั้งพารามิเตอร์ของสภาพภูมิประเทศหน้างานจริง เพื่อคำนวณระยะแนวเขตและการจัดทหารพรานและแนวสกัดกั้นอย่างเหมาะสม
+                </p>
+
+                <div className="grid grid-cols-2 gap-2 mb-3">
+                  <div>
+                    <label className="text-[10px] text-slate-400 block mb-1">ลักษณะทางภูมิศาสตร์</label>
+                    <select 
+                      value={configTerrain} 
+                      onChange={(e) => setConfigTerrain(e.target.value)}
+                      className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs focus:border-amber-500 focus:outline-none"
+                    >
+                      <option value="highway">🛣️ ทางหลวงแผ่นดินสายหลัก</option>
+                      <option value="secondary">🛣️ ถนนสายรอง / ทางเลี่ยงด่าน</option>
+                      <option value="trail">🌲 ช่องทางธรรมชาติ / แนวป่าเขา</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-[10px] text-slate-400 block mb-1">ความหนาแน่นการจราจร</label>
+                    <select 
+                      value={configTraffic} 
+                      onChange={(e) => setConfigTraffic(e.target.value)}
+                      className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs focus:border-amber-500 focus:outline-none"
+                    >
+                      <option value="high">🔥 หนาแน่นสูง (High Load)</option>
+                      <option value="low">❄️ เบาบาง (Low/Normal)</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Live Recommendation Output Display Card */}
+                <div className="bg-slate-950 border border-slate-800 rounded-xl p-3 space-y-2.5 text-xs">
+                  <div className="flex items-center gap-1 border-b border-slate-900 pb-1.5 text-amber-400">
+                    <Sparkles className="w-4 h-4" />
+                    <span className="font-bold tracking-wide">แผนแนะแนวสกัดกั้นยุทธวิธีสากล:</span>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 text-[11px] leading-relaxed">
+                    <div className="p-2 bg-slate-900/50 rounded border border-slate-800/60">
+                      <strong className="text-slate-300 block mb-0.5">ระยะแนวเตือน (Buffer):</strong>
+                      <span className="text-amber-300 font-semibold">{getCheckpointRecommendation().buffer}</span>
+                    </div>
+                    <div className="p-2 bg-slate-900/50 rounded border border-slate-800/60">
+                      <strong className="text-slate-300 block mb-0.5">การวางตัว Spotter:</strong>
+                      <span className="text-blue-300 font-semibold">{getCheckpointRecommendation().spotter}</span>
+                    </div>
+                    <div className="p-2 bg-slate-900/50 rounded border border-slate-800/60">
+                      <strong className="text-slate-300 block mb-0.5">อัตรากำลังขั้นต่ำ:</strong>
+                      <span className="text-emerald-300 font-semibold">{getCheckpointRecommendation().force}</span>
+                    </div>
+                    <div className="p-2 bg-slate-900/50 rounded border border-slate-800/60">
+                      <strong className="text-slate-300 block mb-0.5">กะการทำงาน K-9:</strong>
+                      <span className="text-purple-300 font-semibold">{getCheckpointRecommendation().k9Shift}</span>
+                    </div>
+                  </div>
+
+                  <div className="p-2.5 bg-blue-950/20 rounded border border-blue-900/40 text-[11px] text-slate-300 leading-relaxed">
+                    <strong>คำแนะนำเพิ่มความมั่นคง:</strong> {getCheckpointRecommendation().tip}
+                  </div>
+                </div>
+              </section>
+
+              {/* Checkpoint Map Section */}
+              <section className="bg-slate-800/40 rounded-xl p-3.5 border border-slate-700/60 shadow-lg">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <Map className="w-5 h-5 text-blue-400" />
+                    <h3 className="font-bold text-sm text-slate-200">แผนผังควบคุมด่านตรวจและยุทธวิธี</h3>
+                  </div>
+                  <span className="text-[10px] text-slate-400 bg-slate-950 px-2 py-0.5 rounded border border-slate-800 font-mono">
+                    BUFFER: 200m
+                  </span>
+                </div>
+
+                <p className="text-xs text-slate-400 mb-4 leading-relaxed">
+                  คลิกที่ตำแหน่งต่าง ๆ บนผังด่านตรวจเพื่อศึกษาวิธีการวางทหารพราน/สุนัข และการประสานงานการป้องกัน
+                </p>
+
+                {/* Dynamic Styled Checkpoint Map Layout */}
+                <div className="relative bg-slate-950 border border-slate-800 rounded-xl p-4 overflow-hidden h-[280px] flex flex-col justify-between">
+                  
+                  {/* Road Grid and Cones background */}
+                  <div className="absolute inset-0 flex justify-between px-12 pointer-events-none opacity-20">
+                    <div className="border-r border-dashed border-slate-500 h-full w-1"></div>
+                    <div className="border-r border-dashed border-slate-500 h-full w-1"></div>
+                  </div>
+
+                  {/* Zone 1: Buffer Zone (Top) */}
+                  <button 
+                    onClick={() => setSelectedZone('buffer')}
+                    className={`w-full py-2.5 rounded-lg text-center transition-all border text-xs font-bold relative z-10 ${
+                      selectedZone === 'buffer' 
+                        ? 'bg-blue-600/35 border-blue-400 text-blue-200 ring-2 ring-blue-500' 
+                        : 'bg-slate-900/80 border-slate-800 text-slate-400'
+                    }`}
+                  >
+                    🚧 แนวตรวจสอบล่วงหน้า / Buffer Zone (200ม.)
+                  </button>
+
+                  {/* Mid grid representing Spotter & Sandwich */}
+                  <div className="grid grid-cols-2 gap-3 relative z-10 my-1">
+                    <button 
+                      onClick={() => setSelectedZone('spotter')}
+                      className={`py-4 rounded-lg text-center transition-all border text-xs font-bold ${
+                        selectedZone === 'spotter' 
+                          ? 'bg-amber-600/30 border-amber-400 text-amber-200 ring-2 ring-amber-500' 
+                          : 'bg-slate-900/80 border-slate-800 text-slate-400'
+                      }`}
+                    >
+                      🔭 Spotter <br/>
+                      <span className="text-[9px] font-normal opacity-80">(หน่วยชี้เป้า/ส่องกล้อง)</span>
+                    </button>
+
+                    <button 
+                      onClick={() => setSelectedZone('sandwich')}
+                      className={`py-4 rounded-lg text-center transition-all border text-xs font-bold ${
+                        selectedZone === 'sandwich' 
+                          ? 'bg-red-600/30 border-red-400 text-red-200 ring-2 ring-red-500' 
+                          : 'bg-slate-900/80 border-slate-800 text-slate-400'
+                      }`}
+                    >
+                      🚗 Mobile Sandwich <br/>
+                      <span className="text-[9px] font-normal opacity-80">(ชุดไล่ล่าประกบแซนวิช)</span>
+                    </button>
+                  </div>
+
+                  {/* Zone 3: Safe Search & Cover Zone (Bottom) */}
+                  <div className="grid grid-cols-2 gap-3 relative z-10">
+                    <button 
+                      onClick={() => setSelectedZone('contact')}
+                      className={`py-4 rounded-lg text-center transition-all border text-xs font-bold ${
+                        selectedZone === 'contact' 
+                          ? 'bg-emerald-600/30 border-emerald-400 text-emerald-200 ring-2 ring-emerald-500' 
+                          : 'bg-slate-900/80 border-slate-800 text-slate-400'
+                      }`}
+                    >
+                      🛡️ Contact Officer <br/>
+                      <span className="text-[9px] font-normal opacity-80">(เจ้าหน้าที่ตรวจค้นหลัก)</span>
+                    </button>
+
+                    <button 
+                      onClick={() => setSelectedZone('cover')}
+                      className={`py-4 rounded-lg text-center transition-all border text-xs font-bold ${
+                        selectedZone === 'cover' 
+                          ? 'bg-purple-600/30 border-purple-400 text-purple-200 ring-2 ring-purple-500' 
+                          : 'bg-slate-900/80 border-slate-800 text-slate-400'
+                      }`}
+                    >
+                      🔫 Cover Officer <br/>
+                      <span className="text-[9px] font-normal opacity-80">(กำลังคุ้มกันระวังหลัง)</span>
+                    </button>
+                  </div>
+
+                </div>
+
+                {/* Zone Description Output */}
+                <div className="mt-3 p-3 bg-slate-900/80 rounded-xl border border-slate-800 text-xs text-slate-300">
+                  {selectedZone === 'none' && (
+                    <div className="text-center py-2 text-slate-500">
+                      💡 แตะตำแหน่งใดก็ได้ด้านบน เพื่อดูรายละเอียดแนวปฏิบัติทางยุทธวิธี
+                    </div>
+                  )}
+                  {selectedZone === 'buffer' && (
+                    <div>
+                      <h4 className="font-bold text-blue-300 mb-1">🚧 Buffer Zone (ระยะแจ้งเตือนล่วงหน้า 200 เมตร)</h4>
+                      <p className="leading-relaxed text-[11px] text-slate-400">
+                        เป็นจุดวางสัญญาณไฟ กรวยส้มสะท้อนแสง และแผงชะลอความเร็ว เพื่อให้เวลากำลังพลวิเคราะห์ความผิดปกติของตัวรถ เช่น อาการเบรกกระทันหัน พยายามสลับคนขับ หรือโยนวัตถุต้องสงสัยทิ้งข้างทาง
+                      </p>
+                    </div>
+                  )}
+                  {selectedZone === 'spotter' && (
+                    <div>
+                      <h4 className="font-bold text-amber-300 mb-1">🔭 Spotter Team (หน่วยชี้เป้าซุ่มสังเกตการณ์)</h4>
+                      <p className="leading-relaxed text-[11px] text-slate-400">
+                        จัดวางกำลังซ่อนตัวในจุดภูมิประเทศที่ได้เปรียบ เพื่อรายงานรูปพรรณรถยนต์ ยี่ห้อ และพฤติกรรมผู้ขับขี่ที่ผิดปกติล่วงหน้าก่อนรถจะเข้าถึงช่องตรวจหลักของเจ้าหน้าที่ คอยวิทยุเตือนชุดหน้า
+                      </p>
+                    </div>
+                  )}
+                  {selectedZone === 'sandwich' && (
+                    <div>
+                      <h4 className="font-bold text-red-300 mb-1">🚗 Mobile Sandwich (ชุดสกัดกั้น/ไล่ล่าประกบ)</h4>
+                      <p className="leading-relaxed text-[11px] text-slate-400">
+                        รถกระบะเคลื่อนที่เร็ว จอดเตรียมพร้อมในที่อับสายตาถัดไปจากจุดค้น เมื่อรถเป้าหมายเลี่ยงด่านหรือพยายามขับเบียดสวมรอย ชุดนี้จะเคลื่อนที่ออกบล็อกท้าย หรือเข้าทำแซนวิชหน้าหลังเพื่อบังคับให้หยุดอย่างรวดเร็ว
+                      </p>
+                    </div>
+                  )}
+                  {selectedZone === 'contact' && (
+                    <div>
+                      <h4 className="font-bold text-emerald-300 mb-1">🛡️ Contact Officer (เจ้าหน้าที่ตรวจสอบหลัก)</h4>
+                      <p className="leading-relaxed text-[11px] text-slate-400">
+                        ทำหน้าที่เดินเข้าเจรจา ขอเรียกตรวจเอกสาร และใช้สุนัขดมกลิ่นค้นหาพัสดุ ต้องเปิดเผยตัว ติดกล้อง Body-cam และพกพาอาวุธในระดับที่ควบคุมความประพฤติได้สะดวก เลี่ยงไม่ให้มือทั้งสองขัดแย้งขณะทำงาน
+                      </p>
+                    </div>
+                  )}
+                  {selectedZone === 'cover' && (
+                    <div>
+                      <h4 className="font-bold text-purple-300 mb-1">🔫 Cover Officer (เจ้าหน้าที่คุ้มกันความปลอดภัย)</h4>
+                      <p className="leading-relaxed text-[11px] text-slate-400">
+                        ยืนคุมสถานการณ์ห่างจากคนค้นประมาณ 3-5 เมตรในมุม 45 องศาเพื่อรักษาทัศนวิสัยกว้างไกล ถืออาวุธพร้อมระงับเหตุทันทีที่ผู้ต้องหาชักอาวุธขึ้นต่อสู้หรือพยายามพุ่งชนเจ้าหน้าที่หลัก
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Team Rotation Control */}
+                <div className="mt-4 border-t border-slate-800 pt-3">
+                  <span className="text-[10px] font-bold text-slate-400 block mb-2 uppercase">
+                    ระบบการหมุนเวียนกำลังพลปฏิบัติหน้าที่ (SOP Rotation Scheme)
+                  </span>
+                  <div className="flex gap-2">
+                    {[
+                      { step: 0, label: "01 Standard" },
+                      { step: 1, label: "02 Shift Shift" },
+                      { step: 2, label: "03 Under Fire" }
+                    ].map((btn) => (
+                      <button
+                        key={btn.step}
+                        onClick={() => setRotationStep(btn.step)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex-1 transition-all border ${
+                          rotationStep === btn.step 
+                            ? 'bg-blue-600 text-white border-blue-400' 
+                            : 'bg-slate-900 border-slate-800 text-slate-400'
+                        }`}
+                      >
+                        {btn.label}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="mt-2 text-[11px] bg-slate-950/50 p-2.5 rounded border border-slate-800 text-slate-300">
+                    {rotationStep === 0 && (
+                      <span>💡 <strong>แผนหมุนเวียน 01:</strong> หมุนเวียนหน้าที่ทุก 2-3 ชั่วโมงเพื่อเลี่ยงความอ่อนล้าทางสายตาของทีม Spotter และป้องกันไม่ให้ประสาทดมกลิ่นของสุนัขล้า</span>
+                    )}
+                    {rotationStep === 1 && (
+                      <span>⚠️ <strong>แผนหมุนเวียน 02:</strong> ในสภาพแดดแรงจัด ให้ย้ายสลับ Contact Officer มารับหน้าที่ Cover ในร่ม และลดรอบปฏิบัติงาน K-9 เหลือครึ่งชั่วโมงเพื่อถนอมร่างกาย</span>
+                    )}
+                    {rotationStep === 2 && (
+                      <span>🚨 <strong>แผนหมุนเวียน 03 (ปะทะ):</strong> ยุติการคัดกรองรถทันที ทุกหน่วยสวมวิทยุเข้ารหัส ดึงปืนสั้น/ยาวขยับเข้าที่กำบังแข็งแนวที่ 2 และสกัดรถหลบหนี</span>
+                    )}
+                  </div>
+                </div>
+
+              </section>
+
+            </div>
+          )}
+
+          {/* TAB 3: ADVANCED JOINT SOP CHECKLISTS */}
+          {activeTab === 'checklist' && (
+            <div className="space-y-4 animate-fadeIn">
+              
+              {/* Checklist Category Selector (Tab within Checklist Tab) */}
+              <div className="flex bg-slate-950 p-1 rounded-xl border border-slate-800 gap-1">
+                {[
+                  { id: 'interdiction', label: '1. สกัดกั้น/ค้นหา' },
+                  { id: 'jointK9', label: '2. SOP ร่วม K-9' },
+                  { id: 'legalEvidence', label: '3. กฎหมาย/พยาน' }
+                ].map(subTab => (
+                  <button
+                    key={subTab.id}
+                    onClick={() => setActiveChecklistTab(subTab.id)}
+                    className={`flex-1 py-1.5 rounded-lg text-[10px] font-bold transition-all text-center ${
+                      activeChecklistTab === subTab.id 
+                        ? 'bg-emerald-600 text-white' 
+                        : 'text-slate-400 hover:text-slate-200'
+                    }`}
+                  >
+                    {subTab.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Checklist Content Panels */}
+              {activeChecklistTab === 'interdiction' && (
+                <section className="bg-slate-800/40 rounded-xl p-3.5 border border-slate-700/60 shadow-lg animate-scaleUp">
+                  <div className="flex items-center gap-2 mb-2">
+                    <CheckSquare className="w-5 h-5 text-emerald-400" />
+                    <h3 className="font-bold text-sm text-slate-200">ยุทธวิธีสกัดกั้นและตรวจค้นยาเสพติด</h3>
+                  </div>
+                  <p className="text-[11px] text-slate-400 mb-4 leading-relaxed">
+                    ขั้นตอนสำคัญในการลดความเสี่ยงการถูกจู่โจม ป้องกันการเสียรูปกระบวน และการทิ้งรอยนิ้วมือเชื่อมโยงยานพาหนะคู่กรณี
+                  </p>
+
+                  <div className="space-y-2.5">
+                    {checklistInterdiction.map((item) => (
+                      <div 
+                        key={item.id} 
+                        onClick={() => toggleChecklist(item.id, 'interdiction')}
+                        className="flex items-start gap-3 p-3 bg-slate-900/60 rounded-xl border border-slate-800 hover:border-slate-700 cursor-pointer transition-all"
+                      >
+                        <div className={`mt-0.5 w-4.5 h-4.5 rounded-md flex items-center justify-center border transition-all ${
+                          item.checked 
+                            ? 'bg-emerald-500 border-emerald-400 text-slate-950 animate-scaleUp' 
+                            : 'border-slate-600 bg-slate-950'
+                        }`}>
+                          {item.checked && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+                        </div>
+                        <span className={`text-[11px] leading-relaxed transition-all flex-1 ${item.checked ? 'text-slate-500 line-through font-normal' : 'text-slate-300 font-medium'}`}>
+                          {item.text}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {activeChecklistTab === 'jointK9' && (
+                <section className="bg-slate-800/40 rounded-xl p-3.5 border border-slate-700/60 shadow-lg animate-scaleUp">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Dog className="w-5 h-5 text-blue-400" />
+                    <h3 className="font-bold text-sm text-slate-200">บูรณาการร่วมขั้นสูงร่วมกับ K-9 (SOP ร่วม)</h3>
+                  </div>
+                  <p className="text-[11px] text-slate-400 mb-4 leading-relaxed">
+                    ควบคุมสภาวะสิ่งแวดล้อมให้เหมาะสมกับจมูกของสุนัขเพื่อความแม่นยำสูงสุด และมาตรการตอบสนองเร่งด่วนกรณีสุนัขดมกลิ่นได้รับสารพิษโอเวอร์โดส
+                  </p>
+
+                  <div className="space-y-2.5">
+                    {checklistJointK9.map((item) => (
+                      <div 
+                        key={item.id} 
+                        onClick={() => toggleChecklist(item.id, 'jointK9')}
+                        className="flex items-start gap-3 p-3 bg-slate-900/60 rounded-xl border border-slate-800 hover:border-slate-700 cursor-pointer transition-all"
+                      >
+                        <div className={`mt-0.5 w-4.5 h-4.5 rounded-md flex items-center justify-center border transition-all ${
+                          item.checked 
+                            ? 'bg-blue-500 border-blue-400 text-slate-950 animate-scaleUp' 
+                            : 'border-slate-600 bg-slate-950'
+                        }`}>
+                          {item.checked && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+                        </div>
+                        <span className={`text-[11px] leading-relaxed transition-all flex-1 ${item.checked ? 'text-slate-500 line-through font-normal' : 'text-slate-300 font-medium'}`}>
+                          {item.text}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {activeChecklistTab === 'legalEvidence' && (
+                <section className="bg-slate-800/40 rounded-xl p-3.5 border border-slate-700/60 shadow-lg animate-scaleUp">
+                  <div className="flex items-center gap-2 mb-2">
+                    <FileText className="w-5 h-5 text-purple-400" />
+                    <h3 className="font-bold text-sm text-slate-200">นิติวิทยาศาสตร์และการรักษาน้ำหนักคดี</h3>
+                  </div>
+                  <p className="text-[11px] text-slate-400 mb-4 leading-relaxed">
+                    ขั้นตอนจัดการบันทึกและระบบเอกสารควบคุมตัวตาม พ.ร.บ.อุ้มหายฯ มาตรา 22 เพื่อป้องกันไม่ให้ทนายความจำเลยนำมาหักล้างในชั้นศาล
+                  </p>
+
+                  <div className="space-y-2.5">
+                    {checklistLegalEvidence.map((item) => (
+                      <div 
+                        key={item.id} 
+                        onClick={() => toggleChecklist(item.id, 'legalEvidence')}
+                        className="flex items-start gap-3 p-3 bg-slate-900/60 rounded-xl border border-slate-800 hover:border-slate-700 cursor-pointer transition-all"
+                      >
+                        <div className={`mt-0.5 w-4.5 h-4.5 rounded-md flex items-center justify-center border transition-all ${
+                          item.checked 
+                            ? 'bg-purple-500 border-purple-400 text-slate-950 animate-scaleUp' 
+                            : 'border-slate-600 bg-slate-950'
+                        }`}>
+                          {item.checked && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+                        </div>
+                        <span className={`text-[11px] leading-relaxed transition-all flex-1 ${item.checked ? 'text-slate-500 line-through font-normal' : 'text-slate-300 font-medium'}`}>
+                          {item.text}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              )}
+
+            </div>
+          )}
+
+          {/* TAB 4: LEGAL SAFEGUARDS & EVIDENCE MANAGEMENT */}
+          {activeTab === 'legal' && (
+            <div className="space-y-4 animate-fadeIn">
+              
+              {/* พ.ร.บ.อุ้มหาย พ.ศ. 2565 Dashboard */}
+              <section className="bg-slate-800/40 rounded-xl p-3.5 border border-slate-700/60 shadow-lg">
+                <div className="flex items-center gap-2 mb-3">
+                  <FileText className="w-5 h-5 text-blue-400" />
+                  <h3 className="font-bold text-sm text-slate-200">พ.ร.บ. ป้องกันการทรมานและอุ้มหาย พ.ศ. 2565</h3>
+                </div>
+                
+                <p className="text-xs text-slate-400 mb-4 leading-relaxed">
+                  กฎหมายระดับประเทศที่ควบคุมพฤติกรรมเจ้าหน้าที่รัฐอย่างเคร่งครัด การละเลยมีความผิดอาญารุนแรงถึงจำคุกสูงสุดตลอดชีวิต
+                </p>
+
+                {/* Statutory Articles */}
+                <div className="space-y-3">
+                  <div className="bg-slate-950/80 p-3 rounded-lg border-l-4 border-red-500">
+                    <span className="text-[10px] text-red-400 font-bold tracking-wider block uppercase mb-1">มาตรา 5: การทรมาน (Torture)</span>
+                    <p className="text-[11px] text-slate-300 leading-relaxed">
+                      ห้ามทรมานทางร่างกาย จิตใจ เพื่อให้เกิดความเจ็บปวดรุนแรง บังคับเอาข้อมูล หรือคำสารภาพ
+                    </p>
+                  </div>
+
+                  <div className="bg-slate-950/80 p-3 rounded-lg border-l-4 border-amber-500">
+                    <span className="text-[10px] text-amber-400 font-bold tracking-wider block uppercase mb-1">มาตรา 6: การย่ำยีศักดิ์ศรี (Degrading Treatment)</span>
+                    <p className="text-[11px] text-slate-300 leading-relaxed">
+                      ห้ามกระทำการโหดร้าย ไร้มนุษยธรรม ย่ำยีศักดิ์ศรีความเป็นมนุษย์ หรือทำให้เกิดความหวาดกลัวอย่างไร้เหตุผล
+                    </p>
+                  </div>
+
+                  <div className="bg-slate-950/80 p-3 rounded-lg border-l-4 border-purple-500">
+                    <span className="text-[10px] text-purple-400 font-bold tracking-wider block uppercase mb-1">มาตรา 7: การบังคับสูญหาย (Enforced Disappearance)</span>
+                    <p className="text-[11px] text-slate-300 leading-relaxed">
+                      การควบคุมตัวโดยปฏิเสธการรับรู้ ปิดบังชะตากรรมผู้ถูกกักตัว ไม่รายงานตามสิทธิ์ มีโทษจำคุก 5-15 ปี
+                    </p>
+                  </div>
+                </div>
+
+                {/* Record and Cam Duty (Section 22) */}
+                <div className="mt-4 bg-slate-900/60 p-3 rounded-xl border border-slate-800 text-xs text-slate-300">
+                  <h4 className="font-bold text-slate-200 mb-1 flex items-center gap-1.5 text-blue-400">
+                    <Check className="w-4 h-4 text-emerald-400" />
+                    หน้าที่บันทึกภาพและเสียงตลอดการควบคุมตัว
+                  </h4>
+                  <p className="leading-relaxed text-[11px] text-slate-400 mt-1">
+                    ตามมาตรา 22 ต้องบันทึกภาพและเสียงอย่างต่อเนื่อง ตั้งแต่เริ่มจับกุมจนกระทั่งส่งตัวให้พนักงานสอบสวน เว้นแต่มีเหตุสุดวิสัยทางเทคนิคซึ่งต้องบันทึกเหตุผลนั้นไว้โดยละเอียด
+                  </p>
+                </div>
+              </section>
+
+              {/* Court Battle & Defense cross-examination simulator */}
+              <section className="bg-slate-800/40 rounded-xl p-3.5 border border-slate-700/60 shadow-lg">
+                <div className="flex items-center gap-2 mb-2">
+                  <Scale className="w-5 h-5 text-purple-400" />
+                  <h3 className="font-bold text-sm text-slate-200">จำลองการต่อสู้คดีในชั้นศาล (K-9 Legal Weight)</h3>
+                </div>
+                <p className="text-[11px] text-slate-400 leading-relaxed mb-3">
+                  ทดลองตอบคำถามซักค้านของทนายฝ่ายจำเลยที่พยายามล้มน้ำหนักพยานหลักฐานการตรวจพบยาเสพติดด้วย K-9 และกล้องขัดข้อง
+                </p>
+
+                {/* Question view */}
+                <div className="bg-slate-950 border border-slate-800 p-3.5 rounded-xl space-y-3">
+                  <div className="flex items-center justify-between text-[9px] font-mono text-slate-400 uppercase">
+                    <span>คำถามข้อที่ {courtQuestionIndex + 1} / 2</span>
+                    <span className="text-purple-400 font-bold">แต้มบารมีศาล: {courtScore}</span>
+                  </div>
+
+                  <p className="text-xs text-slate-200 leading-relaxed font-semibold italic">
+                    {courtQuestions[courtQuestionIndex].q}
+                  </p>
+
+                  <div className="space-y-2 pt-1">
+                    {courtQuestions[courtQuestionIndex].options.map((opt, idx) => {
+                      const isSelected = selectedCourtOption === idx;
+                      let optionStyle = "bg-slate-900/60 border-slate-800 hover:border-slate-700 text-slate-300";
+                      
+                      if (courtStep === 1) {
+                        if (opt.score === 10) {
+                          optionStyle = "bg-emerald-950/80 border-emerald-500 text-emerald-300";
+                        } else if (isSelected) {
+                          optionStyle = "bg-red-950/80 border-red-500 text-red-300";
+                        } else {
+                          optionStyle = "bg-slate-950/40 border-slate-900 text-slate-600";
+                        }
+                      }
+
+                      return (
+                        <button
+                          key={idx}
+                          disabled={courtStep !== 0}
+                          onClick={() => handleCourtOptionSelect(idx)}
+                          className={`w-full p-2.5 rounded-lg text-left text-[11px] leading-relaxed transition-all border ${optionStyle}`}
+                        >
+                          {opt.text}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {courtStep === 1 && (
+                    <div className="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-[10px] leading-relaxed text-slate-300 animate-scaleUp">
+                      <strong>ผลลัพธ์ยุทธวิธีในกระบวนการศาล:</strong>
+                      <p className="mt-1 text-slate-200">
+                        {courtQuestions[courtQuestionIndex].options[selectedCourtOption].feedback}
+                      </p>
+                      <button 
+                        onClick={advanceCourtQuestion}
+                        className="mt-2 w-full py-1.5 bg-purple-600 hover:bg-purple-500 text-white rounded font-bold text-[10px] uppercase tracking-wider transition-all"
+                      >
+                        คำถามถัดไป
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </section>
+
+              {/* Logbook Importance */}
+              <section className="bg-slate-800/40 rounded-xl p-3.5 border border-slate-700/60 shadow-lg">
+                <div className="flex items-center gap-2 mb-3">
+                  <Dog className="w-5 h-5 text-blue-400" />
+                  <h3 className="font-bold text-sm text-slate-200">ความสำคัญของการบันทึก Logbook สุนัขตำรวจ</h3>
+                </div>
+
+                <p className="text-xs text-slate-400 mb-3 leading-relaxed">
+                  ทำไมการลงบันทึกการฝึกและปฏิบัติงาน K-9 ประจำสัปดาห์จึงเป็นเรื่องระดับคดีแพ้ชนะในศาล?
+                </p>
+
+                <div className="p-3 bg-slate-900/70 border border-slate-800 rounded-lg text-xs leading-relaxed space-y-2">
+                  <div className="flex items-start gap-2">
+                    <X className="w-4 h-4 text-red-500 mt-0.5 shrink-0" />
+                    <p className="text-slate-300">
+                      <strong>ช่องโหว่ทางคดี:</strong> ทนายฝ่ายจำเลยมักพยายามซักค้านว่าสุนัขแจ้งเตือนผิดพลาด (False Positive) หรือขาดการฝึกฝนมาตรฐาน ทำให้ศาลไม่รับฟังหลักฐานการดมกลิ่นพบคอนเทนเนอร์สารเสพติด
+                    </p>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <Check className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                    <p className="text-slate-300">
+                      <strong>แนวทางป้องกันทางกฎหมาย:</strong> การอัปเดต K-9 Logbook ทุกครั้งที่ทำการฝึกกระตุ้น ช่วยพิสูจน์เชิงวิทยาศาสตร์ว่าประสิทธิภาพความแม่นยำสูงกว่า 95% ศาลจึงรับฟังคำพยานจากสุนัขและผู้จูง
+                    </p>
+                  </div>
+                </div>
+              </section>
+
+            </div>
+          )}
+
+          {/* TAB 5: AI ASSISTANT & MULTIMODAL GEMINI HUB (TTS, IMAGEN & COMPUTER VISION) */}
+          {activeTab === 'assistant' && (
+            <div className="space-y-4 animate-fadeIn">
+              
+              {/* Multimodal Hub Navigation Subtabs */}
+              <div className="grid grid-cols-3 gap-1 bg-slate-950 p-1.5 rounded-xl border border-slate-800">
+                <button
+                  onClick={() => setAssistantSubTab('consult')}
+                  className={`py-2 rounded-lg text-[10px] font-bold tracking-wide transition-all text-center flex flex-col items-center gap-1 ${
+                    assistantSubTab === 'consult' ? 'bg-amber-600/35 border border-amber-500/50 text-amber-200' : 'text-slate-400'
+                  }`}
+                >
+                  <Brain className="w-3.5 h-3.5 text-amber-400" />
+                  <span>ที่ปรึกษา & สแกนภาพ</span>
+                </button>
+                <button
+                  onClick={() => setAssistantSubTab('scenario')}
+                  className={`py-2 rounded-lg text-[10px] font-bold tracking-wide transition-all text-center flex flex-col items-center gap-1 ${
+                    assistantSubTab === 'scenario' ? 'bg-purple-600/35 border border-purple-500/50 text-purple-200' : 'text-slate-400'
+                  }`}
+                >
+                  <Map className="w-3.5 h-3.5 text-purple-400" />
+                  <span>จำลองเหตุการณ์</span>
+                </button>
+                <button
+                  onClick={() => setAssistantSubTab('pt1')}
+                  className={`py-2 rounded-lg text-[10px] font-bold tracking-wide transition-all text-center flex flex-col items-center gap-1 ${
+                    assistantSubTab === 'pt1' ? 'bg-blue-600/35 border border-blue-500/50 text-blue-200' : 'text-slate-400'
+                  }`}
+                >
+                  <FileText className="w-3.5 h-3.5 text-blue-400" />
+                  <span>รายงาน ปท.1</span>
+                </button>
+              </div>
+
+              {/* Subtab 1: AI Advisor & Multimodal Computer Vision Analyzer */}
+              {assistantSubTab === 'consult' && (
+                <div className="space-y-4 animate-scaleUp">
+                  
+                  {/* Suspicious Image Understanding with Gemini */}
+                  <section className="bg-slate-800/40 rounded-xl p-3.5 border border-slate-700/60 shadow-lg space-y-3">
+                    <div className="flex items-center gap-2">
+                      <Camera className="w-5 h-5 text-blue-400" />
+                      <h3 className="font-bold text-sm text-slate-200">สแกนหลักฐานต้องสงสัยด้วย Gemini Vision</h3>
+                    </div>
+                    <p className="text-xs text-slate-400 leading-relaxed">
+                      อัปโหลดรูปถ่ายพัสดุ ยานพาหนะ หรือสิ่งกีดขวางแนวชายแดน เพื่อให้โมเดลประเมินพิรุธและให้แนวทางความปลอดภัยทางยุทธวิธี
+                    </p>
+
+                    <div className="grid grid-cols-2 gap-2">
+                      <button 
+                        onClick={() => loadMockImage('plate')}
+                        className="p-2 bg-slate-900 border border-slate-800 hover:border-slate-700 text-[10px] rounded-lg text-slate-300 flex items-center justify-center gap-1.5"
+                      >
+                        🚗 โหลดภาพป้ายทะเบียนต้องสงสัย
+                      </button>
+                      <button 
+                        onClick={() => loadMockImage('pack')}
+                        className="p-2 bg-slate-900 border border-slate-800 hover:border-slate-700 text-[10px] rounded-lg text-slate-300 flex items-center justify-center gap-1.5"
+                      >
+                        📦 โหลดภาพหีบห่อต้องสงสัย
+                      </button>
+                    </div>
+
+                    <div className="flex items-center gap-3 bg-slate-950 border border-slate-800 p-3 rounded-xl">
+                      <input 
+                        type="file" 
+                        accept="image/*" 
+                        onChange={handleImageUpload} 
+                        className="hidden" 
+                        id="image-analyzer-file"
+                      />
+                      <label 
+                        htmlFor="image-analyzer-file"
+                        className="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700 text-[11px] font-bold rounded-lg cursor-pointer flex items-center gap-1.5"
+                      >
+                        <Image className="w-4 h-4 text-blue-400" />
+                        เลือกไฟล์จากเครื่อง...
+                      </label>
+
+                      {analysedImagePreview ? (
+                        <div className="flex-1 flex items-center gap-2">
+                          <img 
+                            src={analysedImagePreview} 
+                            alt="Selected target preview" 
+                            className="w-10 h-10 object-cover rounded border border-slate-700"
+                          />
+                          <span className="text-[10px] text-slate-400 truncate max-w-[120px]">พร้อมทำการวิเคราะห์</span>
+                        </div>
+                      ) : (
+                        <span className="text-[10px] text-slate-500">ไม่ได้เลือกไฟล์</span>
+                      )}
+                    </div>
+
+                    <button
+                      onClick={analyzeSuspiciousImage}
+                      disabled={isAnalyzingImage || !analysedImage}
+                      className="w-full py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-xl text-xs font-bold transition-all shadow-md flex items-center justify-center gap-1.5 disabled:opacity-40"
+                    >
+                      {isAnalyzingImage ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <Wand2 className="w-4 h-4" />
+                      )}
+                      ประมวลผลความปลอดภัยด้วยภาพ
+                    </button>
+
+                    {imageAnalysisResult && (
+                      <div className="bg-slate-950/90 border border-blue-500/30 p-3.5 rounded-xl text-xs space-y-2.5 animate-scaleUp">
+                        <div className="flex items-center justify-between pb-2 border-b border-slate-800">
+                          <div className="flex items-center gap-1.5 text-blue-400 font-bold">
+                            <Check className="w-4 h-4 text-emerald-400" />
+                            <span>ผลการประเมินนิติวิทยาศาสตร์และยุทธวิธี:</span>
+                          </div>
+                          
+                          <button
+                            onClick={() => speakTextWithAI(imageAnalysisResult)}
+                            disabled={isSpeaking}
+                            className="px-2 py-1 bg-blue-950 text-blue-400 border border-blue-800 hover:bg-blue-900 text-[9px] font-bold rounded flex items-center gap-1 disabled:opacity-40"
+                          >
+                            {isSpeaking ? (
+                              <Loader2 className="w-3 h-3 animate-spin" />
+                            ) : (
+                              <Volume2 className="w-3 h-3" />
+                            )}
+                            ฟังเสียงบรรยาย (TTS)
+                          </button>
+                        </div>
+                        <div className="max-h-[300px] overflow-y-auto text-[11px] text-slate-300 leading-relaxed pr-1">
+                          {renderAIResponse(imageAnalysisResult)}
+                        </div>
+                      </div>
+                    )}
+                  </section>
+
+                  {/* AI Live Text/SOP Consultant */}
+                  <section className="bg-slate-800/40 rounded-xl p-3.5 border border-slate-700/60 shadow-lg space-y-3">
+                    <div className="flex items-center gap-2">
+                      <Sparkles className="w-5 h-5 text-amber-400" />
+                      <h3 className="font-bold text-sm text-slate-200">วิเคราะห์เคสเฉพาะหน้าด้วย AI เรียลไทม์</h3>
+                    </div>
+
+                    <p className="text-[11px] text-slate-400 leading-relaxed">
+                      พิมพ์รายงานพฤติการณ์หรือเหตุการณ์แปลกหน้าที่ทีมกำลังเผชิญ เพื่อตรวจสอบแนวทางความมั่นคงที่รัดกุมที่สุด
+                    </p>
+
+                    <div className="space-y-2">
+                      <textarea
+                        rows="3"
+                        value={consultQuery}
+                        onChange={(e) => setConsultQuery(e.target.value)}
+                        placeholder="เช่น ตรวจสอบรถเก๋งแต่งซิ่งพบนั่งมา 4 คน ท่าทางสั่นเหมือนสารเคมี คนขับอ้างตัวเป็นทหารยศสูง และกล้องบันทึกภาพของฉันเริ่มมีความร้อนเตือนดับ..."
+                        className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200 focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/50 focus:outline-none resize-none"
+                      />
+                      
+                      <button
+                        onClick={consultAITactical}
+                        disabled={isConsulting || !consultQuery.trim()}
+                        className="w-full py-2.5 bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-500 hover:to-yellow-500 text-slate-950 rounded-xl text-xs font-extrabold transition-all shadow-md flex items-center justify-center gap-1.5 disabled:opacity-40"
+                      >
+                        {isConsulting ? (
+                          <Loader2 className="w-4 h-4 animate-spin text-slate-950" />
+                        ) : (
+                          <Send className="w-4 h-4 text-slate-950" />
+                        )}
+                        วิเคราะห์พฤติการณ์ยุทธวิธี
+                      </button>
+                    </div>
+
+                    {consultError && (
+                      <div className="p-2.5 bg-red-950/40 border border-red-500/30 rounded-lg text-red-300 text-[11px]">
+                        {consultError}
+                      </div>
+                    )}
+
+                    {consultResult && (
+                      <div className="bg-slate-950/80 border border-amber-500/30 p-3.5 rounded-xl text-xs space-y-2 animate-scaleUp">
+                        <div className="flex items-center justify-between pb-2 border-b border-slate-800">
+                          <div className="flex items-center gap-1.5 text-amber-400 font-bold">
+                            <span className="text-sm">🛡️</span>
+                            <span>ผลการประเมินทางกฎหมายและ SOP โดย AI:</span>
+                          </div>
+
+                          <button
+                            onClick={() => speakTextWithAI(consultResult)}
+                            disabled={isSpeaking}
+                            className="px-2 py-1 bg-amber-950 text-amber-400 border border-amber-800 hover:bg-amber-900 text-[9px] font-bold rounded flex items-center gap-1 disabled:opacity-40"
+                          >
+                            {isSpeaking ? (
+                              <Loader2 className="w-3 h-3 animate-spin" />
+                            ) : (
+                              <Volume2 className="w-3 h-3" />
+                            )}
+                            ฟังวิเคราะห์เสียง (TTS)
+                          </button>
+                        </div>
+                        <div className="max-h-[300px] overflow-y-auto pr-1 text-slate-300 leading-normal">
+                          {renderAIResponse(consultResult)}
+                        </div>
+                      </div>
+                    )}
+                  </section>
+
+                </div>
+              )}
+
+              {/* Subtab 2: AI Live Scenario & Imagen 4.0 Layout Drawer */}
+              {assistantSubTab === 'scenario' && (
+                <div className="space-y-4 animate-scaleUp">
+                  
+                  <section className="bg-slate-800/40 rounded-xl p-3.5 border border-slate-700/60 shadow-lg">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        <Brain className="w-5 h-5 text-purple-400" />
+                        <h3 className="font-bold text-sm text-slate-200">จำลองสถานการณ์ยุทธวิธีสด (Gemini AI)</h3>
+                      </div>
+                      <button
+                        onClick={fetchScenarioWithAI}
+                        disabled={isGeneratingScenario}
+                        className="flex items-center gap-1.5 px-3.5 py-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white rounded-xl text-xs font-bold transition-all shadow-md disabled:opacity-50"
+                      >
+                        {isGeneratingScenario ? (
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        ) : (
+                          <Sparkles className="w-3.5 h-3.5" />
+                        )}
+                        สร้างเคสใหม่
+                      </button>
+                    </div>
+
+                    {scenarioError && (
+                      <div className="p-3 bg-red-950/40 border border-red-500/30 rounded-lg text-red-300 text-[11px] leading-relaxed">
+                        ⚠️ {scenarioError}
+                      </div>
+                    )}
+
+                    {currentScenario ? (
+                      <div className="space-y-4 bg-slate-950/70 p-3.5 rounded-xl border border-purple-900/40 animate-scaleUp">
+                        
+                        {/* Title and Voice narration */}
+                        <div className="flex justify-between items-start gap-2">
+                          <div>
+                            <span className="text-[9px] bg-purple-950 text-purple-300 border border-purple-800 px-2 py-0.5 rounded font-mono uppercase tracking-wide">
+                              Generative AI Simulator
+                            </span>
+                            <h4 className="font-bold text-slate-100 mt-2 text-xs flex items-center gap-1.5">
+                              <Scale className="w-3.5 h-3.5 text-purple-400" />
+                              {currentScenario.title}
+                            </h4>
+                          </div>
+
+                          <button
+                            onClick={() => speakTextWithAI(currentScenario.context)}
+                            disabled={isSpeaking}
+                            className="px-2 py-1 bg-purple-950 text-purple-300 border border-purple-800 hover:bg-purple-900 text-[9px] font-bold rounded flex items-center gap-1 disabled:opacity-40 shrink-0"
+                          >
+                            {isSpeaking ? (
+                              <Loader2 className="w-3 h-3 animate-spin" />
+                            ) : (
+                              <Volume2 className="w-3 h-3" />
+                            )}
+                            ฟังเรื่องย่อ
+                          </button>
+                        </div>
+
+                        <p className="text-[11px] text-slate-400 leading-relaxed italic">{currentScenario.context}</p>
+
+                        {/* Imagen 4.0 Generated Visual Blueprint drawing */}
+                        <div className="border-t border-slate-800/80 pt-3">
+                          <span className="text-[10px] text-slate-400 font-bold block mb-2">แผนผังสถานการณ์จำลอง (Imagen 4.0 Drawing):</span>
+                          
+                          {isGeneratingVisual && (
+                            <div className="h-44 flex flex-col items-center justify-center bg-slate-950 border border-dashed border-purple-900/40 rounded-xl space-y-2">
+                              <Loader2 className="w-6 h-6 animate-spin text-purple-400" />
+                              <span className="text-[10px] text-slate-400">กำลังร่างแบบแผนผังเชิงยุทธวิธี...</span>
+                            </div>
+                          )}
+
+                          {visualUrl && (
+                            <div className="relative rounded-xl overflow-hidden border border-purple-900/40 animate-fadeIn">
+                              <img 
+                                src={visualUrl} 
+                                alt="Imagen tactical sketch blueprint map" 
+                                className="w-full h-44 object-cover"
+                              />
+                              <div className="absolute bottom-0 left-0 right-0 bg-slate-950/80 p-1.5 text-center text-[9px] text-slate-400 border-t border-slate-900 font-mono">
+                                TACTICAL SKYNET BLUEPRINT VISUAL
+                              </div>
+                            </div>
+                          )}
+
+                          {!isGeneratingVisual && !visualUrl && (
+                            <div className="h-20 flex items-center justify-center bg-slate-900/50 rounded-xl border border-slate-800 text-[10px] text-slate-500 text-center">
+                              คลิก "สร้างเคสใหม่" เพื่อจำลองข้อมูลภาพประกอบสถานการณ์
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Steps checkboxes */}
+                        <div className="space-y-1.5 border-t border-slate-800 pt-3">
+                          <span className="text-[9px] text-slate-400 font-bold block mb-1">ขั้นตอนปฏิบัติ (SOP) เช็คลิสต์หน้างานจริง:</span>
+                          {currentScenario.steps.map((step) => (
+                            <div 
+                              key={step.key}
+                              onClick={() => toggleScenarioStep(step.key)}
+                              className="flex items-center justify-between p-2 bg-slate-900/50 rounded border border-slate-800/80 hover:border-slate-700 cursor-pointer transition-all"
+                            >
+                              <span className="text-[11px] text-slate-300 leading-normal pr-2">{step.text}</span>
+                              <div className={`w-4.5 h-4.5 rounded-full flex items-center justify-center border shrink-0 ${
+                                scenarioStepStatus[step.key] 
+                                  ? 'bg-purple-600 border-purple-400 text-white' 
+                                  : 'border-slate-600 bg-slate-950 text-transparent'
+                              }`}>
+                                <Check className="w-3 h-3 stroke-[3]" />
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+
+                      </div>
+                    ) : (
+                      <div className="text-center py-6 text-slate-500 text-xs border border-dashed border-slate-800 rounded-lg bg-slate-950/20">
+                        📥 คลิกปุ่ม "สร้างเคสใหม่" เพื่อสุ่มจำลองเหตุการณ์แนวชายแดน พร้อมออกผังยุทธวิธีเชิงกราฟิกด้วย AI เสมือนจริง
+                      </div>
+                    )}
+                  </section>
+
+                </div>
+              )}
+
+              {/* Subtab 3: Digital PT.1 Reporting Form with Prosecutor Audit tool */}
+              {assistantSubTab === 'pt1' && (
+                <div className="space-y-4 animate-scaleUp">
+                  
+                  <section className="bg-slate-800/40 rounded-xl p-3.5 border border-slate-700/60 shadow-lg">
+                    <div className="flex items-center gap-2 mb-3">
+                      <FileText className="w-5 h-5 text-blue-400" />
+                      <h3 className="font-bold text-sm text-slate-200">แบบบันทึกข้อมูลการควบคุมตัว (แบบ ปท.1)</h3>
+                    </div>
+
+                    <p className="text-xs text-slate-400 mb-4 leading-relaxed">
+                      แบบฟอร์มอิเล็กทรอนิกส์จำลองเพื่อการรายงานข้อมูลบุคคลถูกกักตัวตามมาตรา 22 ส่งศูนย์อัยการ/ปกครองส่วนท้องถิ่น
+                    </p>
+
+                    {!pt1Form.submitted ? (
+                      <form onSubmit={handlePt1Submit} className="space-y-3">
+                        
+                        <div className="grid grid-cols-2 gap-2">
+                          <div>
+                            <label className="text-[10px] text-slate-400 block mb-1">ชื่อผู้รายงาน (ยศ-ชื่อ)</label>
+                            <input 
+                              type="text" 
+                              required
+                              value={pt1Form.officerName}
+                              onChange={(e) => setPt1Form({...pt1Form, officerName: e.target.value})}
+                              placeholder="ร.ต.อ. สมศักดิ์"
+                              className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs focus:border-blue-500 focus:outline-none"
+                            />
+                          </div>
+                          <div>
+                            <label className="text-[10px] text-slate-400 block mb-1">ตำแหน่งทางยุทธการ</label>
+                            <input 
+                              type="text"
+                              required
+                              value={pt1Form.officerRank}
+                              onChange={(e) => setPt1Form({...pt1Form, officerRank: e.target.value})}
+                              placeholder="ผู้บังคับหมวด ตชด.211"
+                              className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs focus:border-blue-500 focus:outline-none"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="border-t border-slate-800 my-2 pt-2"></div>
+
+                        <div>
+                          <label className="text-[10px] text-slate-400 block mb-1">ชื่อผู้ถูกควบคุมตัว</label>
+                          <input 
+                            type="text"
+                            required
+                            value={pt1Form.detaineeName}
+                            onChange={(e) => setPt1Form({...pt1Form, detaineeName: e.target.value})}
+                            placeholder="นายใจกล้า นามสมมุติ"
+                            className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs focus:border-blue-500 focus:outline-none"
+                          />
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-2">
+                          <div>
+                            <label className="text-[10px] text-slate-400 block mb-1">เลขบัตรประชาชน / ID</label>
+                            <input 
+                              type="text"
+                              required
+                              value={pt1Form.detaineeID}
+                              onChange={(e) => setPt1Form({...pt1Form, detaineeID: e.target.value})}
+                              placeholder="3-1209-XXXXX-XX-X"
+                              className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs focus:border-blue-500 focus:outline-none"
+                            />
+                          </div>
+                          <div>
+                            <label className="text-[10px] text-slate-400 block mb-1">อายุ (ปี)</label>
+                            <input 
+                              type="number"
+                              required
+                              value={pt1Form.detaineeAge}
+                              onChange={(e) => setPt1Form({...pt1Form, detaineeAge: e.target.value})}
+                              placeholder="34"
+                              className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs focus:border-blue-500 focus:outline-none"
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="text-[10px] text-slate-400 block mb-1">สถานที่และเวลาควบคุมตัว</label>
+                          <input 
+                            type="text"
+                            required
+                            value={pt1Form.location}
+                            onChange={(e) => setPt1Form({...pt1Form, location: e.target.value})}
+                            placeholder="พิกัดจุดตรวจความมั่นคง บ้านเนินเขา ต.ช่องเม็ก"
+                            className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs focus:border-blue-500 focus:outline-none"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="text-[10px] text-slate-400 block mb-1">ลักษณะเด่นและเครื่องแต่งกายในภาพถ่ายสำรอง</label>
+                          <textarea 
+                            rows="2"
+                            value={pt1Form.photoPlaceholderDesc}
+                            onChange={(e) => setPt1Form({...pt1Form, photoPlaceholderDesc: e.target.value})}
+                            placeholder="สวมเสื้อแจ็กเก็ตยีนส์สีฟ้า กางเกงขาสามส่วนสีดำ มีรอยสักรูปดาวที่แขนขวาด้านนอก"
+                            className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs focus:border-blue-500 focus:outline-none resize-none"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="text-[10px] text-slate-400 block mb-1">เหตุสุดวิสัยกรณีกล้องขัดข้อง / ปัญหาภาพถ่าย (ถ้ามี)</label>
+                          <textarea 
+                            rows="2"
+                            value={pt1Form.forceMejureExplanation}
+                            onChange={(e) => setPt1Form({...pt1Form, forceMejureExplanation: e.target.value})}
+                            placeholder="กล้องขัดข้องเนื่องจากสภาพอากาศฝนตกหนัก มีน้ำซึมเข้าพอร์ตเชื่อมต่อ จึงใช้วิธีวิทยุรายงานศปก. เป็นหลักฐานสำรอง"
+                            className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs focus:border-blue-500 focus:outline-none resize-none"
+                          />
+                        </div>
+
+                        <button
+                          type="submit"
+                          className="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition-all shadow-lg flex items-center justify-center gap-1.5"
+                        >
+                          <Download className="w-4 h-4" />
+                          บันทึกและตรวจสอบรายงาน ปท.1
+                        </button>
+                      </form>
+                    ) : (
+                      <div className="space-y-4 animate-scaleUp">
+                        {/* Beautiful export confirmation card view */}
+                        <div className="bg-slate-950 border border-emerald-500/30 rounded-xl p-4 relative overflow-hidden">
+                          {/* Watermark badge */}
+                          <div className="absolute top-2 right-2 px-2 py-0.5 bg-emerald-950 text-emerald-400 border border-emerald-500/30 text-[9px] font-mono rounded font-bold uppercase tracking-widest">
+                            SECURE REPORT LOCKED
+                          </div>
+
+                          <div className="flex items-center gap-2 mb-3 pb-2 border-b border-slate-800/80">
+                            <CheckSquare className="w-5 h-5 text-emerald-400" />
+                            <div>
+                              <h4 className="font-bold text-xs text-slate-200">บันทึกข้อมูล ปท.1 สำเร็จ</h4>
+                              <p className="text-[9px] text-slate-400">TIMESTAMP: {new Date().toLocaleTimeString('th-TH')}</p>
+                            </div>
+                          </div>
+
+                          <div className="space-y-2 text-[11px] text-slate-300">
+                            <div>
+                              <strong className="text-slate-400">ผู้รายงาน:</strong> {pt1Form.officerRank} {pt1Form.officerName}
+                            </div>
+                            <div>
+                              <strong className="text-slate-400">ผู้ถูกควบคุมตัว:</strong> {pt1Form.detaineeName} (อายุ {pt1Form.detaineeAge} ปี)
+                            </div>
+                            <div>
+                              <strong className="text-slate-400">เลขประจำตัว:</strong> {pt1Form.detaineeID}
+                            </div>
+                            <div>
+                              <strong className="text-slate-400">สถานที่:</strong> {pt1Form.location}
+                            </div>
+                            {pt1Form.photoPlaceholderDesc && (
+                              <div>
+                                <strong className="text-slate-400">พรรณนาภาพถ่าย:</strong> {pt1Form.photoPlaceholderDesc}
+                              </div>
+                            )}
+                            {pt1Form.forceMejureExplanation && (
+                              <div className="bg-amber-950/20 p-2 rounded border border-amber-800/30 mt-2 text-amber-300">
+                                <strong>⚠️ เหตุสุดวิสัยบันทึกภาพ/เสียง:</strong> {pt1Form.forceMejureExplanation}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Integrated AI Auditor Panel */}
+                        <div className="bg-slate-950 border border-purple-500/30 rounded-xl p-3 space-y-2.5">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-1.5 text-xs font-bold text-purple-300">
+                              <Scale className="w-4 h-4 text-purple-400" />
+                              <span>อัยการวิเคราะห์สุ่มเสี่ยงกฎหมาย (Gemini)</span>
+                            </div>
+                            
+                            <button
+                              onClick={auditPt1Form}
+                              disabled={isAuditing}
+                              className="px-2.5 py-1 bg-purple-600/20 text-purple-300 border border-purple-500/30 hover:bg-purple-600/40 text-[10px] font-bold rounded-lg transition-all flex items-center gap-1"
+                            >
+                              {isAuditing ? (
+                                <Loader2 className="w-3 h-3 animate-spin" />
+                              ) : (
+                                <FileCheck className="w-3 h-3" />
+                              )}
+                              ตรวจสอบประวัติ
+                            </button>
+                          </div>
+
+                          {auditError && (
+                            <div className="p-2.5 bg-red-950/40 border border-red-500/30 rounded-lg text-red-300 text-[11px]">
+                              {auditError}
+                            </div>
+                          )}
+
+                          {auditResult && (
+                            <div className="bg-slate-900/60 p-3 rounded-lg border border-slate-800 text-[11px] leading-relaxed max-h-[250px] overflow-y-auto pr-1">
+                              {renderAIResponse(auditResult)}
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="flex gap-2">
+                          <button
+                            onClick={handlePt1Reset}
+                            className="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-lg text-xs font-bold transition-all"
+                          >
+                            แก้ไขเอกสารใหม่
+                          </button>
+                          <button
+                            onClick={() => {
+                              showToast("ส่งไฟล์ ปท.1 และรายงานพฤติการณ์ไปยังศูนย์รับแจ้งความมั่นคงอำเภอเรียบร้อย", "success");
+                            }}
+                            className="flex-1 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-bold transition-all"
+                          >
+                            นำออกเอกสาร (PDF)
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </section>
+
+                </div>
+              )}
+
+            </div>
+          )}
+
+          {/* TAB 6: GAMIFIED CHALLENGE QUIZ GAME (VS DAB LAEM) */}
+          {activeTab === 'quiz' && (
+            <div className="space-y-4 animate-fadeIn">
+              
+              {!quizStarted && quizPhase === 'idle' && (
+                <section className="bg-slate-800/40 rounded-xl p-4 border border-slate-700/60 shadow-lg text-center space-y-4">
+                  <div className="p-3 bg-blue-900/20 rounded-2xl w-fit mx-auto border border-blue-500/30">
+                    <Award className="w-10 h-10 text-blue-400" />
+                  </div>
+                  
+                  <div>
+                    <h3 className="font-bold text-base text-slate-100">ดวลยุทธวิธีสู้ 'ดาบแหลม' (AI)</h3>
+                    <p className="text-xs text-slate-400 leading-relaxed mt-1">
+                      ทดสอบปฏิภาณความปลอดภัยและข้อกฎหมาย 20 ข้อเพื่อชิงความเป็นหนึ่งในสนามรบเชิงกลยุทธ์
+                    </p>
+                  </div>
+
+                  {/* Rules overview */}
+                  <div className="bg-slate-950/60 p-3 rounded-lg border border-slate-800/80 text-left space-y-1.5 text-xs">
+                    <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">กติกาสงครามสมอง:</span>
+                    <div className="flex items-center gap-2 text-slate-300 text-[11px]">
+                      <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                      <span>มีคำถาม 20 ข้อ จับเวลาวิเคราะห์ 10 วินาทีต่อข้อ</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-slate-300 text-[11px]">
+                      <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                      <span>หากตอบผิดหรือปล่อยให้เวลาหมด ดาบแหลมจะฟันแต้มทิ้งทันที</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-slate-300 text-[11px]">
+                      <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                      <span>ผู้ที่สะสมคะแนนได้สูงสุดหลังจบรอบจะเป็นผู้ชนะ</span>
+                    </div>
+                  </div>
+
+                  <form onSubmit={handleStartQuiz} className="space-y-3">
+                    <div>
+                      <label className="text-[10px] text-slate-400 block text-left mb-1">กรอกชื่อของคุณ</label>
+                      <input 
+                        type="text" 
+                        required
+                        value={quizPlayerName}
+                        onChange={(e) => setQuizPlayerName(e.target.value)}
+                        placeholder="จ.ส.ต. สมชาย"
+                        className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs text-center focus:border-blue-500 focus:outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] text-slate-400 block text-left mb-1">สังกัด / กองร้อย</label>
+                      <input 
+                        type="text" 
+                        value={quizPlayerRank}
+                        onChange={(e) => setQuizPlayerRank(e.target.value)}
+                        placeholder="กองร้อย ตชด.224"
+                        className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs text-center focus:border-blue-500 focus:outline-none"
+                      />
+                    </div>
+
+                    <button
+                      type="submit"
+                      className="w-full py-3 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white rounded-xl text-xs font-black transition-all shadow-lg uppercase tracking-wider"
+                    >
+                      เริ่มสงครามตอบคำถามยุทธวิธี
+                    </button>
+                  </form>
+                </section>
+              )}
+
+              {/* Quiz Gameplay Screen */}
+              {quizStarted && (quizPhase === 'playing' || quizPhase === 'reveal') && (
+                <div className="space-y-4">
+                  
+                  {/* Split Screen VS Scoreboard */}
+                  <div className="grid grid-cols-2 gap-2 bg-slate-950 border border-slate-800 rounded-xl p-3">
+                    
+                    {/* Player Card */}
+                    <div className="flex flex-col items-center justify-center border-r border-slate-800/80 pr-2 py-1">
+                      <div className="w-8 h-8 rounded-full bg-blue-600/20 text-blue-400 flex items-center justify-center font-bold text-xs mb-1">
+                        🧑
+                      </div>
+                      <span className="text-[11px] font-bold text-slate-200 truncate max-w-[120px]">{quizPlayerName}</span>
+                      <span className="text-[9px] text-slate-400 truncate max-w-[120px]">{quizPlayerRank || 'ตชด. ผู้ท้าชิง'}</span>
+                      <div className="text-xl font-black text-blue-400 mt-1 font-mono">{playerScore}</div>
+                    </div>
+
+                    {/* AI Opponent: Dab Laem */}
+                    <div className="flex flex-col items-center justify-center pl-2 py-1">
+                      <div className="w-8 h-8 rounded-full bg-purple-600/20 text-purple-400 flex items-center justify-center font-bold text-xs mb-1">
+                        🤖
+                      </div>
+                      <span className="text-[11px] font-bold text-slate-200">ดาบแหลม (AI)</span>
+                      <span className="text-[9px] text-purple-400 uppercase tracking-widest font-mono">Tactical Bot</span>
+                      <div className="text-xl font-black text-purple-400 mt-1 font-mono">{aiScore}</div>
+                    </div>
+
+                  </div>
+
+                  {/* Visual Timer Bar */}
+                  <div className="bg-slate-950 border border-slate-800 rounded-lg p-2 flex items-center justify-between">
+                    <div className="flex items-center gap-1.5">
+                      <Clock className="w-4 h-4 text-amber-500" />
+                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                        เวลาในการตัดสินใจ:
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-24 h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                        <div 
+                          className={`h-full transition-all duration-1000 ${
+                            quizTimer <= 3 ? 'bg-red-500' : 'bg-blue-500'
+                          }`}
+                          style={{ width: `${(quizTimer / 10) * 100}%` }}
+                        ></div>
+                      </div>
+                      <span className="text-xs font-mono font-bold text-slate-200">{quizTimer}s</span>
+                    </div>
+                  </div>
+
+                  {/* Question Card */}
+                  <section className="bg-slate-800/40 border border-slate-700/60 rounded-xl p-4 shadow-lg space-y-4">
+                    <div className="flex justify-between items-center text-[10px] text-slate-400 uppercase font-mono tracking-wider">
+                      <span>ข้อที่ {currentQuestionIndex + 1} จาก 20</span>
+                      <span className="px-2 py-0.5 bg-slate-950 rounded border border-slate-800">
+                        คะแนนรวม: {playerScore + aiScore}
+                      </span>
+                    </div>
+
+                    <h4 className="font-bold text-xs text-slate-100 leading-relaxed">
+                      {QUIZ_QUESTIONS[currentQuestionIndex].question}
+                    </h4>
+
+                    {/* Options */}
+                    <div className="space-y-2 pt-2">
+                      {QUIZ_QUESTIONS[currentQuestionIndex].options.map((opt, oIdx) => {
+                        const isCorrect = oIdx === QUIZ_QUESTIONS[currentQuestionIndex].answer;
+                        const isSelected = oIdx === selectedOption;
+                        let btnStyle = "bg-slate-950 border-slate-800 hover:border-slate-700 text-slate-300";
+
+                        if (quizPhase === 'reveal') {
+                          if (isCorrect) {
+                            btnStyle = "bg-emerald-950/80 border-emerald-500 text-emerald-300";
+                          } else if (isSelected) {
+                            btnStyle = "bg-red-950/80 border-red-500 text-red-300";
+                          } else {
+                            btnStyle = "bg-slate-950/40 border-slate-900 text-slate-600";
+                          }
+                        }
+
+                        return (
+                          <button
+                            key={oIdx}
+                            disabled={quizPhase !== 'playing'}
+                            onClick={() => handleOptionSelect(oIdx)}
+                            className={`w-full p-3 rounded-lg text-left text-xs transition-all border flex items-start gap-2 ${btnStyle}`}
+                          >
+                            <span className="font-mono text-slate-500 text-[10px] mt-0.5">[{oIdx + 1}]</span>
+                            <span className="flex-1 leading-normal">{opt}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    {/* Reveal Phase Feedback / AI Dialogue */}
+                    {quizPhase === 'reveal' && (
+                      <div className="bg-slate-950 border border-slate-800 p-2.5 rounded-lg space-y-1.5">
+                        <div className="flex items-center gap-1.5 text-xs font-bold">
+                          <span>🤖</span>
+                          <span className="text-purple-400">
+                            {selectedOption === QUIZ_QUESTIONS[currentQuestionIndex].answer 
+                              ? "ดาบแหลม: ชิส! เก่งไม่เบานี่หว่า ได้ไปหนึ่งแต้ม" 
+                              : selectedOption === null 
+                                ? "ดาบแหลม: ลังเลเกินไปแล้ว! ชักช้าหมดสิทธิ์ ดาบแหลมกินแต้มฟรี" 
+                                : "ดาบแหลม: ฮั่นแน่! ตอบผิดซะงั้น ผมขอแต้มนี้ละกันนะ"}
+                          </span>
+                        </div>
+                        <p className="text-[10px] text-slate-400 leading-normal pl-5">
+                          <strong>เฉลยพฤติการณ์:</strong> {QUIZ_QUESTIONS[currentQuestionIndex].rationale}
+                        </p>
+                      </div>
+                    )}
+                  </section>
+                </div>
+              )}
+
+              {/* Summary View Screen */}
+              {quizPhase === 'summary' && (
+                <section className="bg-slate-800/40 rounded-xl p-4 border border-slate-700/60 shadow-lg text-center space-y-4">
+                  <div className="p-3 bg-blue-900/20 rounded-2xl w-fit mx-auto border border-blue-500/30">
+                    <Sparkles className="w-10 h-10 text-amber-400" />
+                  </div>
+
+                  <div>
+                    <span className="text-[10px] bg-slate-950 border border-slate-800 px-3 py-1 rounded-full font-mono text-slate-400">
+                      ยุทธการเสร็จสิ้น
+                    </span>
+                    <h3 className="font-bold text-sm text-slate-100 mt-2">สรุปผลการรบทางสติปัญญากับดาบแหลม</h3>
+                  </div>
+
+                  {/* Scores Card */}
+                  <div className="bg-slate-950 p-4 border border-slate-800 rounded-xl grid grid-cols-2 gap-4">
+                    <div className="text-center border-r border-slate-800/80">
+                      <span className="text-[10px] text-slate-400 block uppercase">คะแนนของคุณ</span>
+                      <strong className="text-2xl text-blue-400 font-mono block mt-1">{playerScore}</strong>
+                    </div>
+                    <div className="text-center">
+                      <span className="text-[10px] text-slate-400 block uppercase">คะแนนดาบแหลม</span>
+                      <strong className="text-2xl text-purple-400 font-mono block mt-1">{aiScore}</strong>
+                    </div>
+                  </div>
+
+                  {/* Declare Winner */}
+                  <div className="p-3 bg-slate-900 border border-slate-800 rounded-lg">
+                    <h4 className="text-xs font-bold text-slate-300">
+                      ผู้ชนะเด็ดขาดในเกมนี้:
+                    </h4>
+                    <p className="text-base font-black text-amber-400 mt-1">
+                      {playerScore > aiScore 
+                        ? `🏆 ผู้ชนะคือคุณ: ${quizPlayerName}!` 
+                        : playerScore === aiScore 
+                          ? "🤝 เสมอกันด้วยฝีมือยุทธวิธีเสมอกัน!" 
+                          : "🏆 ดาบแหลม (AI) ชนะ! พยายามใหม่อีกครั้ง"}
+                    </p>
+                  </div>
+
+                  <button
+                    onClick={restartQuiz}
+                    className="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-bold transition-all shadow"
+                  >
+                    กลับไปท้าทายใหม่
+                  </button>
+                </section>
+              )}
+
+            </div>
+          )}
+
+        </main>
+
+        {/* Floating Action Quick SOP Drawer Helper at Bottom */}
+        <div className="absolute bottom-0 left-0 right-0 bg-slate-950 border-t border-slate-800 py-2.5 px-4 flex justify-between items-center text-[10px] z-15 backdrop-blur-md">
+          <span className="text-slate-400 flex items-center gap-1.5">
+            <Shield className="w-3.5 h-3.5 text-blue-400" />
+          </span>
+          <button 
+            onClick={() => setActiveTab('checklist')}
+            className="text-blue-400 hover:text-blue-300 font-bold transition-colors flex items-center gap-0.5"
+          >
+            เปิดตารางเช็คลิสต์ด่วน
+            <ChevronRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
+
+      </div>
+    </div>
+  );
+}
+
+
+const bootLoader = document.getElementById('boot-loader');
+if (bootLoader) bootLoader.remove();
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+</script>
+</body>
+</html>
