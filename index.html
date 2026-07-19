@@ -1313,11 +1313,11 @@ function App() {
         </header>
 
         {/* Dynamic Navigation Tabs */}
-        <div className="relative bg-slate-950/80 border-b border-slate-800 sticky top-0 z-10">
+        <div className="flex items-stretch bg-slate-950/80 border-b border-slate-800 sticky top-0 z-10">
           <button
             type="button"
             onClick={() => scrollNavBy(-160)}
-            className="absolute left-0 top-0 bottom-0 z-20 flex items-center px-1 bg-gradient-to-r from-slate-950 via-slate-950/90 to-transparent text-slate-400 hover:text-blue-400"
+            className="flex items-center justify-center w-6 shrink-0 text-slate-500 hover:text-blue-400 active:text-blue-400"
             aria-label="เลื่อนเมนูไปทางซ้าย"
           >
             <ChevronLeft className="w-4 h-4" />
@@ -1329,7 +1329,7 @@ function App() {
             onMouseUp={endNavDrag}
             onMouseLeave={endNavDrag}
             onWheel={handleNavWheel}
-            className="flex p-1 overflow-x-auto overscroll-x-contain scrollbar-none backdrop-blur-md cursor-grab active:cursor-grabbing select-none"
+            className="flex flex-1 min-w-0 p-1 overflow-x-auto overscroll-x-contain scrollbar-none backdrop-blur-md cursor-grab active:cursor-grabbing select-none"
           >
           {[
             { id: 'dashboard', label: 'ข่าวกรอง K-9', icon: Dog },
@@ -1363,7 +1363,7 @@ function App() {
           <button
             type="button"
             onClick={() => scrollNavBy(160)}
-            className="absolute right-0 top-0 bottom-0 z-20 flex items-center px-1 bg-gradient-to-l from-slate-950 via-slate-950/90 to-transparent text-slate-400 hover:text-blue-400"
+            className="flex items-center justify-center w-6 shrink-0 text-slate-500 hover:text-blue-400 active:text-blue-400"
             aria-label="เลื่อนเมนูไปทางขวา"
           >
             <ChevronRight className="w-4 h-4" />
