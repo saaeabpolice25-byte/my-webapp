@@ -241,4 +241,1039 @@ main{padding:16px 16px 40px;position:relative;z-index:1;}
   width:74px;height:74px;margin:0 auto 12px;border-radius:50%;
   background:radial-gradient(circle at 35% 30%, #7fd8ff, #1560c9 55%, #071226 100%);
   box-shadow:0 0 30px rgba(94,230,255,.35), inset 0 0 20px rgba(255,255,255,.2);
-  display:flex;al
+  display:flex;align-items:center;justify-content:center;
+  animation:pulse 2.4s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{box-shadow:0 0 24px rgba(94,230,255,.28), inset 0 0 20px rgba(255,255,255,.18);}50%{box-shadow:0 0 40px rgba(94,230,255,.5), inset 0 0 24px rgba(255,255,255,.25);}}
+.ai-hero .orb svg{width:32px;height:32px;stroke:#04162c;}
+.random-btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;padding:14px;border-radius:14px;margin-bottom:16px;cursor:pointer;
+  background:linear-gradient(135deg,var(--blue-600),#0e3a86);
+  border:1px solid rgba(150,200,255,.4);
+  color:#fff;font-family:'Kanit';font-weight:600;font-size:14px;
+  box-shadow:0 6px 18px rgba(21,96,201,.35);
+}
+.random-btn:active{transform:scale(.98);}
+.random-btn svg{width:18px;height:18px;}
+.topic-list{display:flex;flex-direction:column;gap:10px;}
+.topic-item{
+  display:flex;align-items:center;gap:12px;padding:13px;border-radius:12px;cursor:pointer;
+  background:linear-gradient(160deg,#0d1e3c,#081226);border:1px solid rgba(120,168,235,.2);
+}
+.topic-item .ti-icon{width:34px;height:34px;border-radius:9px;flex:0 0 auto;background:linear-gradient(150deg,#1e4d94,#0c2650);display:flex;align-items:center;justify-content:center;}
+.topic-item .ti-icon svg{width:17px;height:17px;stroke:var(--cyan-glow);}
+.topic-item span{font-size:12.8px;color:var(--silver-1);flex:1;line-height:1.4;}
+.topic-item .arrow{width:14px;height:14px;stroke:var(--silver-3);}
+
+/* PT1 Form */
+.form-field{margin-bottom:12px;}
+.form-field label{display:block;font-size:11.5px;color:var(--silver-3);margin-bottom:5px;font-family:'Kanit';}
+.form-field input,.form-field textarea{
+  width:100%;padding:11px 12px;border-radius:10px;
+  background:#081226;border:1px solid rgba(120,168,235,.3);
+  color:var(--silver-1);font-family:'Sarabun';font-size:13px;
+}
+.form-field textarea{resize:vertical;min-height:60px;}
+.form-field input:focus,.form-field textarea:focus{outline:none;border-color:var(--cyan-glow);}
+.form-row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.form-actions{display:flex;gap:10px;margin-top:16px;}
+.btn-primary{
+  flex:1;padding:13px;border-radius:12px;border:none;cursor:pointer;
+  background:linear-gradient(135deg,var(--blue-600),#0e3a86);color:#fff;
+  font-family:'Kanit';font-weight:600;font-size:13.5px;
+}
+.btn-ghost{
+  flex:1;padding:13px;border-radius:12px;cursor:pointer;
+  background:transparent;border:1px solid rgba(150,190,240,.35);color:var(--silver-2);
+  font-family:'Kanit';font-size:13.5px;
+}
+.save-toast{
+  position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);
+  background:linear-gradient(135deg,#123a1e,#0c2650);border:1px solid rgba(34,197,139,.5);
+  color:#d9fff0;padding:12px 18px;border-radius:12px;font-size:12.5px;
+  opacity:0;transition:all .3s ease;z-index:200;pointer-events:none;
+  display:flex;align-items:center;gap:8px;max-width:80%;
+}
+.save-toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.save-toast svg{width:16px;height:16px;stroke:var(--green);flex:0 0 auto;}
+
+/* ---------- QUIZ ---------- */
+.quiz-intro{text-align:center;padding:16px 6px;}
+.quiz-intro .swords{width:70px;height:70px;margin:0 auto 14px;}
+.quiz-intro h2{font-family:'Kanit';font-size:19px;margin:0 0 8px;}
+.quiz-intro p{color:var(--silver-2);font-size:12.8px;line-height:1.6;margin:0 0 18px;}
+.name-input{
+  width:100%;padding:14px;border-radius:12px;text-align:center;
+  background:#081226;border:1.5px solid rgba(120,168,235,.35);
+  color:var(--silver-1);font-family:'Kanit';font-size:15px;margin-bottom:14px;
+}
+.name-input:focus{outline:none;border-color:var(--cyan-glow);}
+.start-btn{
+  width:100%;padding:15px;border-radius:14px;border:none;cursor:pointer;
+  background:linear-gradient(135deg,#1c6b3f,#0e3a86);color:#fff;
+  font-family:'Kanit';font-weight:700;font-size:15px;letter-spacing:.5px;
+  box-shadow:0 8px 22px rgba(28,107,63,.4);
+}
+.start-btn:disabled{opacity:.4;}
+.rules-box{
+  text-align:left;background:linear-gradient(160deg,#0d1e3c,#081226);border:1px solid rgba(120,168,235,.2);
+  border-radius:14px;padding:14px;margin-bottom:16px;font-size:11.8px;color:var(--silver-2);line-height:1.7;
+}
+.rules-box b{color:var(--silver-1);}
+
+.vs-bar{
+  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;margin-bottom:16px;
+}
+.vs-side{
+  border-radius:14px;padding:12px 10px;text-align:center;
+  background:linear-gradient(160deg,#0d1e3c,#081226);border:1px solid rgba(120,168,235,.22);
+}
+.vs-side.me{border-color:rgba(94,230,255,.4);}
+.vs-side.op{border-color:rgba(229,72,77,.35);}
+.vs-side .vname{font-family:'Kanit';font-size:12px;color:var(--silver-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px;}
+.vs-side .vscore{font-family:'Kanit';font-size:26px;font-weight:700;}
+.vs-side.me .vscore{color:var(--cyan-glow);}
+.vs-side.op .vscore{color:#ff9a9d;}
+.vs-mid{font-family:'Kanit';font-size:12px;color:var(--silver-3);font-weight:700;}
+
+.qprog{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:11.5px;color:var(--silver-3);font-family:'Kanit';}
+.timer-wrap{display:flex;flex-direction:column;align-items:center;margin-bottom:14px;}
+.timer-ring{position:relative;width:64px;height:64px;}
+.timer-ring svg{transform:rotate(-90deg);width:64px;height:64px;}
+.timer-ring circle.bg{stroke:#0c1c38;}
+.timer-ring circle.fg{stroke:var(--cyan-glow);stroke-linecap:round;transition:stroke-dashoffset 1s linear, stroke .3s;}
+.timer-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Kanit';font-weight:700;font-size:20px;}
+
+.q-card{
+  background:linear-gradient(160deg,#0e2144,#081226);border:1px solid rgba(120,168,235,.25);
+  border-radius:16px;padding:16px;margin-bottom:14px;min-height:74px;
+  display:flex;align-items:center;
+}
+.q-card p{margin:0;font-size:14.5px;line-height:1.55;font-weight:500;color:var(--silver-1);}
+.opt-grid{display:flex;flex-direction:column;gap:10px;}
+.opt-btn{
+  text-align:left;padding:13px 14px;border-radius:12px;cursor:pointer;
+  background:linear-gradient(160deg,#0d1e3c,#081226);border:1.5px solid rgba(120,168,235,.25);
+  color:var(--silver-1);font-family:'Sarabun';font-size:13px;line-height:1.4;
+  display:flex;align-items:center;gap:10px;transition:all .15s;
+}
+.opt-btn .letter{
+  width:24px;height:24px;border-radius:7px;flex:0 0 auto;
+  background:rgba(120,168,235,.15);display:flex;align-items:center;justify-content:center;
+  font-family:'Kanit';font-size:12px;font-weight:700;color:var(--silver-2);
+}
+.opt-btn:active{transform:scale(.98);}
+.opt-btn.correct{border-color:var(--green);background:linear-gradient(160deg,#0f2a24,#081226);}
+.opt-btn.correct .letter{background:var(--green);color:#04160e;}
+.opt-btn.wrong{border-color:var(--red);background:linear-gradient(160deg,#2a1013,#081226);}
+.opt-btn.wrong .letter{background:var(--red);color:#fff;}
+.opt-btn.disabled{pointer-events:none;opacity:.7;}
+.opt-btn.disabled.correct,.opt-btn.disabled.wrong{opacity:1;}
+
+.feedback-strip{
+  text-align:center;padding:10px;border-radius:10px;margin-top:4px;font-size:12.5px;font-family:'Kanit';font-weight:600;
+  opacity:0;transition:opacity .2s;
+}
+.feedback-strip.show{opacity:1;}
+.feedback-strip.win{background:rgba(34,197,139,.14);color:#7cf7cc;border:1px solid rgba(34,197,139,.4);}
+.feedback-strip.lose{background:rgba(229,72,77,.14);color:#ff9a9d;border:1px solid rgba(229,72,77,.4);}
+
+.result-wrap{text-align:center;padding:20px 6px;}
+.result-trophy{width:88px;height:88px;margin:0 auto 16px;}
+.result-title{font-family:'Kanit';font-size:22px;font-weight:700;margin:0 0 6px;}
+.result-sub{color:var(--silver-2);font-size:13px;margin:0 0 24px;}
+.result-scores{display:flex;gap:10px;justify-content:center;margin-bottom:24px;}
+.result-scores .rs{
+  flex:1;max-width:150px;padding:16px 10px;border-radius:14px;
+  background:linear-gradient(160deg,#0d1e3c,#081226);border:1px solid rgba(120,168,235,.25);
+}
+.result-scores .rs.winner{border-color:var(--amber);box-shadow:0 0 20px rgba(240,180,41,.25);}
+.result-scores .rname{font-family:'Kanit';font-size:12px;color:var(--silver-2);margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.result-scores .rscore{font-family:'Kanit';font-size:30px;font-weight:700;color:var(--silver-1);}
+.result-scores .crown{font-size:18px;margin-bottom:2px;}
+
+/* toggle switches / small helpers */
+.chip-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+.chip{font-size:10.5px;padding:4px 10px;border-radius:20px;background:rgba(120,168,235,.12);color:var(--silver-2);border:1px solid rgba(120,168,235,.25);}
+
+/* ---------- AGENCY / LEGAL AUTHORITY CARDS ---------- */
+.agency-grid{display:flex;flex-direction:column;gap:10px;margin-top:4px;}
+.agency-card{
+  border-radius:14px;padding:13px 14px;position:relative;overflow:hidden;
+  background:linear-gradient(155deg,#0e2144 0%,#081226 70%);
+  border:1px solid rgba(120,168,235,.22);
+}
+.agency-card .ag-top{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.agency-card .ag-icon{
+  width:32px;height:32px;border-radius:9px;flex:0 0 auto;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(150deg,#1e4d94,#0c2650);border:1px solid rgba(150,190,240,.3);
+}
+.agency-card .ag-icon svg{width:16px;height:16px;stroke:var(--cyan-glow);}
+.agency-card h4{margin:0;font-family:'Kanit';font-size:13px;font-weight:600;color:var(--silver-1);line-height:1.3;}
+.law-badge{
+  display:inline-block;font-size:10px;padding:3px 9px;border-radius:20px;margin:0 0 8px;
+  background:rgba(240,180,41,.12);border:1px solid rgba(240,180,41,.35);color:var(--amber);
+  font-family:'Kanit';letter-spacing:.2px;
+}
+.agency-card p{margin:0;font-size:12px;line-height:1.6;color:var(--silver-2);}
+.agency-card p b{color:var(--silver-1);}
+
+/* ---------- EQUIPMENT BLOCKS ---------- */
+.equip-phase{margin-bottom:14px;}
+.equip-phase .ep-head{
+  display:flex;align-items:center;gap:8px;margin-bottom:8px;
+}
+.equip-phase .ep-head .ep-dot{width:8px;height:8px;border-radius:50%;background:var(--cyan-glow);box-shadow:0 0 8px var(--cyan-glow);}
+.equip-phase .ep-head span{font-family:'Kanit';font-size:12px;font-weight:600;color:var(--cyan-glow);text-transform:uppercase;letter-spacing:.5px;}
+.equip-row{
+  display:flex;align-items:flex-start;gap:10px;padding:10px 11px;border-radius:11px;margin-bottom:7px;
+  background:linear-gradient(160deg,#0d1e3c,#081226);border:1px solid rgba(120,168,235,.16);
+}
+.equip-row .eq-icon{width:26px;height:26px;border-radius:7px;flex:0 0 auto;background:rgba(94,230,255,.1);display:flex;align-items:center;justify-content:center;}
+.equip-row .eq-icon svg{width:14px;height:14px;stroke:var(--cyan-glow);}
+.equip-row .eq-txt{font-size:12px;line-height:1.55;color:var(--silver-2);}
+.equip-row .eq-txt b{color:var(--silver-1);}
+
+/* ---------- PENALTY / SEVERITY CARDS ---------- */
+.penalty-card{
+  border-radius:14px;padding:14px;margin-bottom:10px;position:relative;overflow:hidden;
+  background:linear-gradient(155deg,#1c1027 0%,#081226 70%);
+  border:1px solid rgba(229,72,77,.28);
+}
+.penalty-card .pc-sevbar{
+  position:absolute;left:0;top:0;bottom:0;width:5px;
+}
+.penalty-card .pc-sevbar.sev-1{background:linear-gradient(180deg,#f0b429,#c98a10);}
+.penalty-card .pc-sevbar.sev-2{background:linear-gradient(180deg,#ff8a3d,#c9540f);}
+.penalty-card .pc-sevbar.sev-3{background:linear-gradient(180deg,#e5484d,#8f1c20);}
+.penalty-card h4{margin:0 0 6px 8px;font-family:'Kanit';font-size:13px;font-weight:600;color:var(--silver-1);}
+.penalty-card .pc-body{margin-left:8px;}
+.penalty-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;font-size:11.8px;border-top:1px dashed rgba(120,168,235,.18);}
+.penalty-row:first-child{border-top:none;}
+.penalty-row .pr-label{color:var(--silver-3);}
+.penalty-row .pr-val{color:#ff9a9d;font-family:'Kanit';font-weight:600;text-align:right;}
+.penalty-note{margin:8px 0 0 8px;font-size:11.3px;color:var(--silver-3);line-height:1.5;font-style:italic;}
+
+::-webkit-scrollbar{width:0;height:0;}
+</style>
+</head>
+<body>
+<div id="app-frame">
+
+<header class="topbar">
+  <div class="back-btn hidden" id="backBtn" onclick="goHome()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+  </div>
+  <h1 id="topTitle" class="metal">SENTINEL LINE</h1>
+</header>
+
+<main>
+
+<!-- ============ HOME ============ -->
+<section class="screen active" id="screen-home">
+  <div class="hero">
+    <div class="badge-ring">
+      <svg viewBox="0 0 100 100">
+        <g class="spin">
+          <circle cx="50" cy="50" r="46" fill="none" stroke="#1e4d94" stroke-width="1.5" stroke-dasharray="4 6"/>
+        </g>
+        <circle cx="50" cy="50" r="36" fill="url(#gshield)" stroke="#5ee6ff" stroke-width="1"/>
+        <path d="M50 20 L74 30 V50 C74 66 62 76 50 82 C38 76 26 66 26 50 V30 Z" fill="none" stroke="#eaf2fb" stroke-width="2.4" stroke-linejoin="round"/>
+        <path d="M40 51 L47 58 L61 42" fill="none" stroke="#5ee6ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        <defs>
+          <radialGradient id="gshield" cx="35%" cy="30%" r="80%">
+            <stop offset="0%" stop-color="#123a72"/>
+            <stop offset="100%" stop-color="#04101f"/>
+          </radialGradient>
+        </defs>
+      </svg>
+    </div>
+    <h1 class="metal">SENTINEL LINE</h1>
+    <p class="sub">ระบบฝึกอบรมยุทธวิธีสกัดกั้นยาเสพติดแนวชายแดน</p>
+    <div class="line"></div>
+  </div>
+
+  <div class="menu-grid">
+    <div class="mcard" onclick="nav('k9')">
+      <div class="micon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 10h.01M16 10h.01M9 15c1 1 5 1 6 0"/><path d="M12 2v3M4.5 4.5l2 2M19.5 4.5l-2 2"/></svg></div>
+      <div><h3>ยุทธวิธี K‑9</h3><p>สกัดกั้นร่วมสุนัขตำรวจตามกฎหมายใหม่</p></div>
+    </div>
+    <div class="mcard" onclick="nav('checklist')">
+      <div class="micon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h5"/><path d="M8.5 16.5l1.7 1.7L13.5 15"/></svg></div>
+      <div><h3>Checklist ตรวจค้น</h3><p>ขั้นตอนปฏิบัติแบบติ๊กสด</p></div>
+    </div>
+    <div class="mcard" onclick="nav('sop')">
+      <div class="micon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 5-3.2 7.8-7 9-3.8-1.2-7-4-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg></div>
+      <div><h3>SOP ร่วม K‑9 ขั้นสูง</h3><p>บูรณาการปิดล้อม‑ตรวจค้น</p></div>
+    </div>
+    <div class="mcard" onclick="nav('deep')">
+      <div class="micon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"/><path d="M12 3v2M21 12h-2M12 21v-2M3 12h2"/></svg></div>
+      <div><h3>ตั้งด่านเชิงลึก</h3><p>ผังจุดตรวจ ระยะปลอดภัย</p></div>
+    </div>
+    <div class="mcard wide" onclick="nav('ai')">
+      <div class="micon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M9 3v3M15 3v3M8 12h.01M16 12h.01M9 16c1.2 1 4.8 1 6 0"/></svg></div>
+      <div class="txt"><h3>ผู้ช่วย AI</h3><p>สุ่มหยิบ Checklist เฉพาะสถานการณ์ + แบบ ปท.1</p></div>
+    </div>
+    <div class="mcard quiz wide" onclick="nav('quiz')">
+      <div class="micon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 5H5a3 3 0 0 0 3 4M16 5h3a3 3 0 0 1-3 4"/><path d="M11 13v3h2v-3M9 20h6l1 2H8z"/></svg></div>
+      <div class="txt"><h3>แบบทดสอบ VS ดาบแหลม</h3><p>ท้าประลอง 20 ข้อ จับเวลา 10 วินาที</p></div>
+    </div>
+  </div>
+  <p class="footnote">FOR OFFICIAL TRAINING USE · CLASSIFIED CONTENT</p>
+</section>
+
+<!-- ============ K9 TACTICS ============ -->
+<section class="screen" id="screen-k9">
+  <div class="intro-card">
+    <h2 class="metal">ยุทธวิธีสกัดกั้นร่วม K‑9</h2>
+    <p>บูรณาการมาตรฐาน UNODC, SOP ป.ป.ส. และ พ.ร.บ.ป้องกันการทรมานฯ พ.ศ. 2565</p>
+  </div>
+  <div id="k9-acc"></div>
+</section>
+
+<!-- ============ CHECKLIST ============ -->
+<section class="screen" id="screen-checklist">
+  <div class="intro-card">
+    <h2 class="metal">Checklist ยุทธวิธีสกัดกั้น</h2>
+    <p>แตะเพื่อทำเครื่องหมายแต่ละขั้นตอนที่ปฏิบัติเสร็จแล้ว ระบบจะคำนวณความคืบหน้าอัตโนมัติ</p>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-track"><div class="progress-fill" id="cl1-fill"></div></div>
+    <div class="progress-pct" id="cl1-pct">0%</div>
+  </div>
+  <div id="cl1-body"></div>
+  <button class="reset-btn" onclick="resetChecklist('cl1')">ล้างค่าและเริ่มใหม่</button>
+</section>
+
+<!-- ============ SOP K9 ============ -->
+<section class="screen" id="screen-sop">
+  <div class="intro-card">
+    <h2 class="metal">SOP บูรณาการร่วม K‑9 ขั้นสูง</h2>
+    <p>ลำดับการทำงานร่วมระหว่างกำลังพลมนุษย์และชุดสุนัขดมกลิ่นในภารกิจปิดล้อมตรวจค้น</p>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-track"><div class="progress-fill" id="cl2-fill"></div></div>
+    <div class="progress-pct" id="cl2-pct">0%</div>
+  </div>
+  <div id="cl2-body"></div>
+  <button class="reset-btn" onclick="resetChecklist('cl2')">ล้างค่าและเริ่มใหม่</button>
+</section>
+
+<!-- ============ DEEP DIVE CHECKPOINT ============ -->
+<section class="screen" id="screen-deep">
+  <div class="intro-card">
+    <h2 class="metal">ข้อมูลเชิงลึก: การตั้งด่านสกัดกั้น</h2>
+    <p>นิยาม อำนาจอนุมัติ ผังวางกำลัง และระยะปลอดภัยตามหลักยุทธวิธี</p>
+  </div>
+  <div id="deep-acc"></div>
+</section>
+
+<!-- ============ AI ASSISTANT ============ -->
+<section class="screen" id="screen-ai">
+  <div class="ai-hero">
+    <div class="orb"><svg viewBox="0 0 24 24" fill="none" stroke="#04162c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M9 3v3M15 3v3M8 12h.01M16 12h.01M9 16c1.2 1 4.8 1 6 0"/></svg></div>
+    <h2 class="metal" style="font-size:19px;margin:0 0 6px;">ผู้ช่วย AI ประจำหน่วย</h2>
+    <p style="color:var(--silver-3);font-size:12.5px;margin:0;">สุ่มหยิบ Checklist เฉพาะสถานการณ์เร่งด่วน หรือเลือกหัวข้อเอง</p>
+  </div>
+  <div class="random-btn" onclick="randomTopic()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="8.5" cy="8.5" r="1" fill="currentColor" stroke="none"/><circle cx="15.5" cy="8.5" r="1" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="8.5" cy="15.5" r="1" fill="currentColor" stroke="none"/><circle cx="15.5" cy="15.5" r="1" fill="currentColor" stroke="none"/></svg>
+    <span>สุ่มหยิบสถานการณ์ให้ฉัน</span>
+  </div>
+  <div class="topic-list">
+    <div class="topic-item" onclick="openTopic(0)"><div class="ti-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg></div><span>ส่งเอกสารแจ้งควบคุมตัวไปศูนย์อัยการทางอิเล็กทรอนิกส์</span><svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></div>
+    <div class="topic-item" onclick="openTopic(1)"><div class="ti-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 5-3.2 7.8-7 9-3.8-1.2-7-4-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg></div><span>Preservation of Lives &amp; Use of Force — บันไดการใช้กำลัง</span><svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></div>
+    <div class="topic-item" onclick="openTopic(2)"><div class="ti-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M9 7H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-1"/><path d="M14 7h1l2 2h2a1 1 0 0 1 1 1v6"/></svg></div><span>ปฏิบัติหน้าที่เมื่อไม่มีกล้อง Body Cam โดยไม่ขัด พ.ร.บ.อุ้มหาย</span><svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></div>
+    <div class="topic-item" onclick="openTopic(3)"><div class="ti-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l10 18H2z"/><path d="M12 9v5M12 17h.01"/></svg></div><span>เผชิญเหตุคนร้ายใช้อาวุธปืนต่อสู้ขัดขืนหน้าด่าน</span><svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></div>
+    <div class="topic-item" onclick="nav('pt1')"><div class="ti-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h9l5 5v15H6z"/><path d="M15 2v5h5M9 13h6M9 17h6M9 9h2"/></svg></div><span>แบบบันทึก ปท.1 — กรอกและบันทึกไฟล์ได้จริง</span><svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></div>
+  </div>
+  <div id="topic-detail" style="margin-top:16px;"></div>
+</section>
+
+<!-- ============ PT1 FORM ============ -->
+<section class="screen" id="screen-pt1">
+  <div class="intro-card">
+    <h2 class="metal">แบบ ปท.1</h2>
+    <p>แบบบันทึกข้อมูลเกี่ยวกับผู้ถูกควบคุมตัวตามมาตรา 10 พ.ร.บ.ป้องกันการทรมานและอุ้มหาย พ.ศ. 2565 — กรอกแล้วกดบันทึกเพื่อดาวน์โหลดไฟล์</p>
+  </div>
+  <div class="form-field"><label>1. ชื่อ‑สกุล ผู้ถูกควบคุมตัว</label><input id="pt-name" placeholder="ระบุชื่อ-นามสกุล"></div>
+  <div class="form-row2">
+    <div class="form-field"><label>เลขบัตรประชาชน</label><input id="pt-id" placeholder="x-xxxx-xxxxx-xx-x"></div>
+    <div class="form-field"><label>อายุโดยประมาณ</label><input id="pt-age" placeholder="ปี"></div>
+  </div>
+  <div class="form-field"><label>ที่อยู่ / เบอร์โทรศัพท์</label><input id="pt-addr" placeholder="ที่อยู่และเบอร์ติดต่อ"></div>
+  <div class="form-row2">
+    <div class="form-field"><label>วัน‑เวลาที่จับกุม</label><input id="pt-datetime" placeholder="วว/ดด/ปปปป เวลา"></div>
+    <div class="form-field"><label>สถานที่จับกุม</label><input id="pt-place" placeholder="ระบุสถานที่"></div>
+  </div>
+  <div class="form-field"><label>2. พฤติการณ์การจับกุมโดยย่อ</label><textarea id="pt-behavior" placeholder="บรรยายพฤติการณ์..."></textarea></div>
+  <div class="form-field"><label>สถานที่ที่จะนำตัวไปควบคุม</label><input id="pt-detain" placeholder="สถานีตำรวจ/หน่วยงาน"></div>
+  <div class="form-row2">
+    <div class="form-field"><label>ยศ‑ชื่อ‑สกุล เจ้าหน้าที่ผู้จับกุม</label><input id="pt-officer" placeholder="ยศ ชื่อ นามสกุล"></div>
+    <div class="form-field"><label>เบอร์โทรเจ้าหน้าที่</label><input id="pt-officerphone" placeholder="0xx-xxx-xxxx"></div>
+  </div>
+  <div class="form-field"><label>เหตุสุดวิสัยที่ไม่สามารถบันทึกภาพ/เสียงได้ (ถ้ามี)</label><textarea id="pt-force" placeholder="ระบุเหตุสุดวิสัย (ถ้าไม่มีเว้นว่าง)..."></textarea></div>
+  <div class="form-actions">
+    <button class="btn-ghost" onclick="clearPt1()">ล้างฟอร์ม</button>
+    <button class="btn-primary" onclick="savePt1()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;vertical-align:-3px;margin-right:4px;"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> บันทึกไฟล์</button>
+  </div>
+</section>
+
+<!-- ============ QUIZ ============ -->
+<section class="screen" id="screen-quiz">
+
+  <div id="quiz-stage-intro">
+    <div class="quiz-intro">
+      <div class="swords">
+        <svg viewBox="0 0 100 100" fill="none">
+          <circle cx="50" cy="50" r="48" fill="url(#qg)"/>
+          <path d="M30 30 L70 70 M70 30 L30 70" stroke="#5ee6ff" stroke-width="4" stroke-linecap="round"/>
+          <defs><radialGradient id="qg" cx="35%" cy="30%"><stop offset="0%" stop-color="#123a72"/><stop offset="100%" stop-color="#04101f"/></radialGradient></defs>
+        </svg>
+      </div>
+      <h2 class="metal">ท้าประลอง "ดาบแหลม"</h2>
+      <p>ทดสอบความรู้ยุทธวิธีสกัดกั้นยาเสพติด 20 ข้อ ตอบให้ทันเวลาก่อนคู่แข่งจะแซง!</p>
+      <input class="name-input" id="playerNameInput" placeholder="พิมพ์ชื่อของคุณ" maxlength="18">
+      <div class="rules-box">
+        <b>กติกา:</b> แต่ละข้อมีเวลา 10 วินาที และมี 4 ตัวเลือก<br>
+        • ตอบถูกทันเวลา → คุณได้ 1 คะแนน<br>
+        • ตอบผิด หรือหมดเวลา → "ดาบแหลม" ได้ 1 คะแนน<br>
+        • ครบ 20 ข้อ ใครคะแนนสูงกว่าชนะ
+      </div>
+      <button class="start-btn" id="startQuizBtn" onclick="startQuiz()" disabled>เริ่มการแข่งขัน</button>
+    </div>
+  </div>
+
+  <div id="quiz-stage-play" style="display:none;">
+    <div class="vs-bar">
+      <div class="vs-side me"><div class="vname" id="q-playername">ผู้เล่น</div><div class="vscore" id="q-playerscore">0</div></div>
+      <div class="vs-mid">VS</div>
+      <div class="vs-side op"><div class="vname">ดาบแหลม</div><div class="vscore" id="q-oppscore">0</div></div>
+    </div>
+    <div class="qprog"><span id="q-index">ข้อที่ 1 / 20</span><span id="q-cat">ยุทธวิธีทั่วไป</span></div>
+    <div class="timer-wrap">
+      <div class="timer-ring">
+        <svg viewBox="0 0 64 64">
+          <circle class="bg" cx="32" cy="32" r="28" fill="none" stroke-width="5"/>
+          <circle class="fg" id="timerCircle" cx="32" cy="32" r="28" fill="none" stroke-width="5" stroke-dasharray="176" stroke-dashoffset="0"/>
+        </svg>
+        <div class="timer-num" id="timerNum">10</div>
+      </div>
+    </div>
+    <div class="q-card"><p id="q-text">คำถาม...</p></div>
+    <div class="opt-grid" id="q-options"></div>
+    <div class="feedback-strip" id="q-feedback"></div>
+  </div>
+
+  <div id="quiz-stage-result" style="display:none;">
+    <div class="result-wrap">
+      <div class="result-trophy">
+        <svg viewBox="0 0 100 100" fill="none" id="trophySvg">
+          <circle cx="50" cy="50" r="48" fill="url(#rg)"/>
+          <path d="M35 30h30v14a15 15 0 0 1-30 0z" fill="none" stroke="#f0b429" stroke-width="3"/>
+          <path d="M35 34h-8a8 8 0 0 0 8 12M65 34h8a8 8 0 0 1-8 12" stroke="#f0b429" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <path d="M46 58v8h8v-8" stroke="#f0b429" stroke-width="3"/>
+          <path d="M40 70h20l2 6H38z" fill="none" stroke="#f0b429" stroke-width="3" stroke-linejoin="round"/>
+          <defs><radialGradient id="rg" cx="35%" cy="30%"><stop offset="0%" stop-color="#123a72"/><stop offset="100%" stop-color="#04101f"/></radialGradient></defs>
+        </svg>
+      </div>
+      <h2 class="result-title metal" id="resultTitle">ผลการแข่งขัน</h2>
+      <p class="result-sub" id="resultSub">สรุปคะแนนรวม 20 ข้อ</p>
+      <div class="result-scores">
+        <div class="rs" id="rs-player"><div class="crown" id="crown-player"></div><div class="rname" id="rs-playername">ผู้เล่น</div><div class="rscore" id="rs-playerscore">0</div></div>
+        <div class="rs" id="rs-opp"><div class="crown" id="crown-opp"></div><div class="rname">ดาบแหลม</div><div class="rscore" id="rs-oppscore">0</div></div>
+      </div>
+      <button class="start-btn" onclick="restartQuiz()">เล่นอีกครั้ง</button>
+    </div>
+  </div>
+
+</section>
+
+</main>
+</div>
+
+<div class="save-toast" id="saveToast"></div>
+
+<script>
+/* ================= ICONS ================= */
+const ICON = {
+  k9:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 10h.01M16 10h.01M9 15c1 1 5 1 6 0"/><path d="M12 2v3M4.5 4.5l2 2M19.5 4.5l-2 2"/></svg>`,
+  check:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h5"/><path d="M8.5 16.5l1.7 1.7L13.5 15"/></svg>`,
+  sop:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 5-3.2 7.8-7 9-3.8-1.2-7-4-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg>`,
+  radar:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"/><path d="M12 3v2M21 12h-2M12 21v-2M3 12h2"/></svg>`,
+  ai:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M9 3v3M15 3v3M8 12h.01M16 12h.01M9 16c1.2 1 4.8 1 6 0"/></svg>`,
+  ai2:`<svg viewBox="0 0 24 24" fill="none" stroke="#04162c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M9 3v3M15 3v3M8 12h.01M16 12h.01M9 16c1.2 1 4.8 1 6 0"/></svg>`,
+  trophy:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 5H5a3 3 0 0 0 3 4M16 5h3a3 3 0 0 1-3 4"/><path d="M11 13v3h2v-3M9 20h6l1 2H8z"/></svg>`,
+  dice:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="8.5" cy="8.5" r="1" fill="currentColor" stroke="none"/><circle cx="15.5" cy="8.5" r="1" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="8.5" cy="15.5" r="1" fill="currentColor" stroke="none"/><circle cx="15.5" cy="15.5" r="1" fill="currentColor" stroke="none"/></svg>`,
+  send:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg>`,
+  shieldcheck:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 5-3.2 7.8-7 9-3.8-1.2-7-4-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg>`,
+  camoff:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M9 7H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-1"/><path d="M14 7h1l2 2h2a1 1 0 0 1 1 1v6"/></svg>`,
+  alert:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l10 18H2z"/><path d="M12 9v5M12 17h.01"/></svg>`,
+  file:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h9l5 5v15H6z"/><path d="M15 2v5h5M9 13h6M9 17h6M9 9h2"/></svg>`,
+  arrow:`<svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>`,
+  save:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;vertical-align:-3px;margin-right:4px;"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>`,
+  toastok:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>`
+};
+// inject icons into template-literal placeholders (since we used plain HTML above, replace manually)
+</script>
+
+<script>
+/* ================= NAVIGATION ================= */
+const TITLES = {
+  home:'SENTINEL LINE', k9:'ยุทธวิธี K‑9', checklist:'Checklist ตรวจค้น', sop:'SOP ร่วม K‑9 ขั้นสูง',
+  deep:'ตั้งด่านเชิงลึก', ai:'ผู้ช่วย AI', pt1:'แบบ ปท.1', quiz:'ท้าประลองดาบแหลม'
+};
+function nav(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+id).classList.add('active');
+  document.getElementById('topTitle').textContent = TITLES[id] || 'SENTINEL LINE';
+  document.getElementById('backBtn').classList.toggle('hidden', id==='home');
+  window.scrollTo(0,0);
+}
+function goHome(){ nav('home'); }
+</script>
+
+<script>
+/* ================= K9 CONTENT (accordion) ================= */
+const K9_DATA = [
+  {t:'การบริหารการข่าวและ Risk Profiling', body:`
+    <p>ระบบมาตรฐานสากลแยกให้คะแนน 2 มิติที่เป็นอิสระต่อกัน:</p>
+    <ul>
+      <li><b>ความน่าเชื่อถือของแหล่งข่าว:</b> ก. เชื่อถือได้เต็มที่ · ข. ตามปกติเชื่อได้ · ค. พอจะเชื่อได้ · ง. เชื่อไม่ค่อยได้ · จ. เชื่อไม่ได้ · ฉ. ไม่สามารถพิสูจน์ทราบได้</li>
+      <li><b>ความแน่นอนของข้อมูล:</b> 1. ยืนยันจากแหล่งอื่น · 2. น่าจะจริง · 3. อาจจะจริง · 4. น่าสงสัย · 5. น่าจะเท็จ · 6. ไม่ทราบว่าจริงหรือเท็จ</li>
+      <li>ข้อมูลระดับสูง (เช่น ก‑1, ข‑2) เท่านั้นที่นำไปกำหนดเป้าหมายจุดตรวจได้อย่างแม่นยำ</li>
+      <li>Risk Profiling บุคคล: ประวัติโซเชียล, ต้องโทษ, เส้นทางการเงิน, เครือญาติ</li>
+      <li>Risk Profiling ยานพาหนะ: ประวัติครอบครองรถผ่าน LPR, เส้นทางอ้อมด่าน, รถไม่มีสัมภาระทั้งที่เดินทางไกล, ช่วงล่างทรุดผิดปกติ</li>
+    </ul>
+    <div class="chip-row"><span class="tag">UNODC</span><span class="tag">SOP ป.ป.ส.</span></div>`},
+  {t:'ประเภทด่าน จุดตรวจ จุดสกัด', body:`
+    <ul>
+      <li><b>ด่านตรวจ:</b> ถาวร 24 ชม. บนทางหลวงหลัก อนุมัติโดย ครม./กอ.รมน. ควบคุมโดยชั้นสัญญาบัตรขึ้นไป</li>
+      <li><b>จุดตรวจ:</b> ชั่วคราวตามห้วงเวลา บนเส้นทางรอง อนุมัติโดย ผบก. ขึ้นไป</li>
+      <li><b>จุดสกัด (Frog Jump):</b> ตั้งทันทีเมื่อเกิดเหตุฉุกเฉิน อนุมัติโดยหัวหน้าสถานี อยู่ที่จุดเพียง 10–20 นาทีแล้วสุ่มย้าย</li>
+    </ul>
+    <div class="warn">ต้องมีป้ายแสดงยศ‑ชื่อหัวหน้าด่าน และป้ายแจ้งสิทธิ์ร้องเรียนทุจริตในระยะมองเห็นชัด 15 เมตร</div>`},
+  {t:'การแบ่งกำลังพลหน้าด่าน 4 ส่วน', body:`
+    <ul>
+      <li><b>Spotter (คัดกรอง):</b> 2–3 คน วิเคราะห์ไม่เกิน 5 นาทีต่อคัน</li>
+      <li><b>Contact Officer (ตรวจค้น):</b> อย่างน้อย 4 คน/รถ 1 คัน ขนาบข้างละ 2 (1 ค้น 1 คุ้มกัน)</li>
+      <li><b>Cover Officer (ระวังหลัง):</b> คุมเชิงรอบนอก เป็นจุดสแตนด์บายของ K‑9</li>
+      <li><b>ชุดเคลื่อนที่เร็ว/แทรกขบวน:</b> นอกเครื่องแบบ ประกบขบวนแบบ 1:1 หรือ 2:1 ก่อนถึงด่าน</li>
+    </ul>`},
+  {t:'ขีดความสามารถและประเภทของ K‑9', body:`
+    <p>ประสาทสัมผัส: การได้ยินดีกว่ามนุษย์ 20 เท่า · การมองเห็นในที่มืดดีกว่า 10 เท่า · การรับกลิ่นดีกว่า 40 เท่า · จดจำคำสั่งได้ ≥100 คำ (เทียบเด็ก 8 ขวบ)</p>
+    <ul>
+      <li><b>ประเภทรักษาความปลอดภัย:</b> สุนัขยาม, สุนัขยามสายตรวจ, สุนัขอารักขา</li>
+      <li><b>ประเภทสนับสนุนยุทธวิธี:</b> สุนัขลาดตระเวน, สุนัขสะกดรอย, สุนัขตรวจทุ่นระเบิด/อุโมงค์ — ห้ามใช้เข้าตี ปะทะ หรือโอบล้อม</li>
+      <li><b>ประเภทหน้าที่พิเศษ:</b> สุนัขตรวจวัตถุระเบิด, สุนัขควบคุมฝูงชน, <b>สุนัขตรวจยาเสพติด</b> — ต้องไม่มีลักษณะชอบต่อสู้โดยเด็ดขาด</li>
+    </ul>`},
+  {t:'ยุทธวิธีตรวจค้นร่วมมนุษย์‑K9', body:`
+    <ul>
+      <li><b>เทคนิคฝาก DNA:</b> Spotter สัมผัสท้ายรถทุกคันเพื่อฝากลายนิ้วมือแฝง กรณีคนขับแหกด่าน</li>
+      <li><b>มุมปลอดภัย:</b> เข้าหารถจากด้านหลังเยื้องขวา (ฝั่งคนขับ) ลดความเสี่ยงถูกชนหรือยิงสวน</li>
+      <li><b>Double Check:</b> ชุดสุนัขดมซ้ำคิดเป็น ~10% ของภารกิจ โดยรอที่หน่วยระวังหลังจนกว่ามนุษย์เคลียร์พื้นที่ก่อน</li>
+      <li><b>Alert:</b> Active Alert (คุ้ย/เห่า) ใช้ในที่โล่ง ห้ามคุ้ยยานพาหนะ · Passive Alert (นั่ง/หมอบจ้อง) เป็นมาตรฐานสุนัขรุ่นใหม่</li>
+    </ul>`},
+  {t:'ข้อจำกัดตามกฎหมายใหม่ (พ.ร.บ.อุ้มหาย)', body:`
+    <ul>
+      <li>ต้องบันทึกภาพและเสียงต่อเนื่องขณะจับ‑ควบคุมตัว จนส่งพนักงานสอบสวน</li>
+      <li>แจ้งพนักงานอัยการและนายอำเภอในท้องที่ทันที (กทม. แจ้งผู้อำนวยการสำนักการสอบสวนฯ กรมการปกครอง)</li>
+      <li>เก็บบันทึกภาพ‑เสียงอย่างน้อย 180 วัน หรือ 2 ปี หากบาดเจ็บสาหัส/เสียชีวิต</li>
+      <li>ห้ามแก้ไข ตัดต่อ ลบ หรือทำลายสิ่งบันทึกโดยเด็ดขาด</li>
+      <li>ต้องกรอกแบบ ปท.1 ให้ครบถ้วนทุกครั้งที่มีการควบคุมตัว</li>
+    </ul>
+    <div class="warn">ความผิดฐานทรมาน (ม.5) จำคุก 5‑15 ปี · ทำให้สูญหาย (ม.7) จำคุก 5‑10 ปี — รวมถึงผู้บังคับบัญชาที่รู้แล้วไม่ดำเนินการ</div>`}
+];
+function renderAcc(containerId, data, openFirst=false){
+  const el = document.getElementById(containerId);
+  el.innerHTML = data.map((d,i)=>`
+    <div class="acc${openFirst&&i===0?' open':''}" data-i="${i}">
+      <div class="acc-head" onclick="toggleAcc('${containerId}',${i})">
+        <div class="num">${String(i+1).padStart(2,'0')}</div>
+        <h3>${d.t}</h3>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </div>
+      <div class="acc-body"><div class="acc-inner">${d.body}</div></div>
+    </div>`).join('');
+}
+function toggleAcc(containerId, i){
+  const el = document.getElementById(containerId);
+  const item = el.querySelector(`.acc[data-i="${i}"]`);
+  item.classList.toggle('open');
+}
+renderAcc('k9-acc', K9_DATA);
+
+/* ============ DEEP DIVE CHECKPOINT ============ */
+const DEEP_DATA = [
+  {t:'นิยามและอำนาจอนุมัติ', body:`
+    <ul>
+      <li><b>ด่านตรวจ:</b> ถาวรตลอด 24 ชม. บนทางหลวงหลัก — อนุมัติโดย ครม. หรือ กอ.รมน.</li>
+      <li><b>จุดตรวจ:</b> ชั่วคราวตามห้วงเวลา บนเส้นทางรอง — อนุมัติโดย ผบก. ขึ้นไป</li>
+      <li><b>จุดสกัด (Frog Jump):</b> ฉุกเฉินทันที — อนุมัติโดยหัวหน้าสถานี ใช้เวลา 10‑20 นาทีแล้วสุ่มย้ายจุด</li>
+    </ul>`},
+  {t:'ผังการจัดวางและอุปกรณ์ยุทธวิธี', body:`
+    <ul>
+      <li>เลือกพื้นที่ทางตรง ไม่ใช่ย่านชุมชน ทัศนวิสัยเปิดโล่ง</li>
+      <li>แสงไฟกลางคืนต้องมองเห็นชัดในระยะ ≥150 เมตร ก่อนถึงจุดตรวจ พร้อมแผงกั้นสะท้อนแสงและกรวยยาง</li>
+      <li>ป้ายแสดงยศ‑ชื่อหัวหน้าด่าน และป้ายแจ้งสิทธิ์ร้องเรียนทุจริต ต้องมองเห็นชัดในระยะ 15 เมตร</li>
+      <li>ชุดคอยเหตุซุ่มพราง ห่างจากจุดตรวจ 200 เมตร (ระยะยิงหวังผล) ทั้งสองฝั่งการจราจร</li>
+    </ul>`},
+  {t:'การแบ่งมอบหน้าที่กำลังพล', body:`
+    <ul>
+      <li>Spotter คัดกรอง 2‑3 คน ไม่เกิน 5 นาที/คัน</li>
+      <li>Contact Officer ตรวจค้น ≥4 คน/คัน ขนาบข้างละ 2</li>
+      <li>Cover Officer ระวังหลังรอบนอก</li>
+      <li>ชุดเคลื่อนที่เร็วประกบขบวนแบบ Tactical Sandwich</li>
+    </ul>`},
+  {t:'กฎหมายและอำนาจหน้าที่ของแต่ละหน่วยงาน', body:`
+    <p style="margin:0 0 10px;">การตั้งด่านร่วมกันต้องเข้าใจขอบเขตอำนาจตามกฎหมายของแต่ละฝ่าย เพื่อไม่ให้เกิดการใช้อำนาจเกินขอบเขตหรือถูกฟ้องกลับ</p>
+    <div class="agency-grid">
+      <div class="agency-card">
+        <div class="ag-top"><div class="ag-icon">${ICON.shieldcheck}</div><h4>สำนักงาน ป.ป.ส. (เจ้าพนักงาน ป.ป.ส.)</h4></div>
+        <span class="law-badge">ประมวลกฎหมายยาเสพติด · พ.ร.บ.วิธีพิจารณาคดียาเสพติด 2550</span>
+        <p>มีอำนาจ<b>เด็ดขาด</b>ในการค้นบุคคล/ยานพาหนะ และสั่งตรวจปัสสาวะหน้าด่านได้ทันทีหากมีพฤติการณ์น่าสงสัย รวมถึงควบคุมตัวซักถามได้ไม่เกิน <b>3 วัน (72 ชม.)</b> ก่อนส่งพนักงานสอบสวน — เป็นอำนาจพิเศษเพิ่มจาก ป.วิ.อาญาปกติ</p>
+      </div>
+      <div class="agency-card">
+        <div class="ag-top"><div class="ag-icon">${ICON.check}</div><h4>สำนักงานตำรวจแห่งชาติ (ภ.จว. / บช.ปส.)</h4></div>
+        <span class="law-badge">ป.วิ.อาญา · ประมวลกฎหมายยาเสพติด</span>
+        <p>รับผิดชอบเส้นทางคมนาคมหลัก‑รอง จับกุม ตรวจค้น สืบสวนขยายผล บันทึกคดีลงระบบ <b>CRIMES</b> — ตรวจปัสสาวะหน้าด่านทำได้เมื่อเป็น "ผู้ต้องหา" เท่านั้น จึงควรแต่งตั้งตำรวจในด่านเป็นเจ้าพนักงาน ป.ป.ส. ร่วมด้วย</p>
+      </div>
+      <div class="agency-card">
+        <div class="ag-top"><div class="ag-icon">${ICON.radar}</div><h4>กองทัพบก (ราบ/ทหารพราน แนวชายแดน)</h4></div>
+        <span class="law-badge">พ.ร.บ.กฎอัยการศึก 2457 · พ.ร.ก.ฉุกเฉิน 2548</span>
+        <p>สกัดกั้น ลาดตระเวน ซุ่มตรวจ ตั้งด่านตรวจค้นชายแดนบกและช่องทางธรรมชาติ — <b>ไม่มีอำนาจคุมตัวสอบสวนเอง</b> ต้องรีบส่งตัวผู้ต้องหาให้พนักงานสอบสวน (ตำรวจ) ภายในเวลาที่กำหนด</p>
+      </div>
+      <div class="agency-card">
+        <div class="ag-top"><div class="ag-icon">${ICON.file}</div><h4>กระทรวงมหาดไทย (ฝ่ายปกครอง/อส.)</h4></div>
+        <span class="law-badge">พ.ร.บ.ลักษณะปกครองท้องที่ 2457 · ป.วิ.อาญา</span>
+        <p>พนักงานฝ่ายปกครอง มีอำนาจตรวจค้น จับกุม ตั้งด่านเส้นทางรอง/ด่านชุมชน หาข่าวเชิงลึก และดูแลระบบรับแจ้งควบคุมตัวในฐานะ <b>"นายอำเภอท้องที่"</b> ตาม พ.ร.บ.อุ้มหายใหม่</p>
+      </div>
+    </div>`},
+  {t:'อุปกรณ์ที่ต้องเตรียมพร้อม', body:`
+    <div class="equip-phase">
+      <div class="ep-head"><span class="ep-dot"></span><span>ก่อนปฏิบัติหน้าที่ (Pre‑Operation)</span></div>
+      <div class="equip-row"><div class="eq-icon">${ICON.camoff}</div><div class="eq-txt"><b>Bodycam / กล้องสนาม</b> — ตรวจแบตเตอรี่และพื้นที่ความจุให้พร้อมบันทึกต่อเนื่องตาม พ.ร.บ.อุ้มหาย ม.22</div></div>
+      <div class="equip-row"><div class="eq-icon">${ICON.shieldcheck}</div><div class="eq-txt"><b>อุปกรณ์แสดงความบริสุทธิ์</b> — ป้ายไฟ "หยุดตรวจ" สะท้อนแสง, ป้ายยศ‑ชื่อหัวหน้าด่าน, ป้ายเบอร์โทร ผบก. สำหรับร้องเรียนทุจริต</div></div>
+      <div class="equip-row"><div class="eq-icon">${ICON.radar}</div><div class="eq-txt"><b>อุปกรณ์ยุทธวิธีหน้าด่าน</b> — กรวยยางสะท้อนแสง, แผงกั้นเหล็ก, ไฟส่องสว่างมองเห็นชัดในระยะ ≥150 เมตร</div></div>
+      <div class="equip-row"><div class="eq-icon">${ICON.check}</div><div class="eq-txt"><b>อุปกรณ์นิติวิทยาศาสตร์</b> — กล้อง CCTV ประจำด่าน, ชุดตรวจปัสสาวะ, คีมคีบสแตนเลส+ภาชนะเก็บตัวอย่าง (ห้ามใช้มือเปล่า), บัตร จนท. ป.ป.ส.</div></div>
+      <div class="equip-row"><div class="eq-icon">${ICON.file}</div><div class="eq-txt"><b>เอกสารแบบฟอร์ม</b> — แบบบันทึก ปท.1 เตรียมพร้อมกรอกข้อมูลอัตลักษณ์และพฤติการณ์จับกุม</div></div>
+    </div>
+    <div class="equip-phase">
+      <div class="ep-head"><span class="ep-dot" style="background:var(--green);box-shadow:0 0 8px var(--green);"></span><span>หลังปฏิบัติหน้าที่ (Post‑Operation)</span></div>
+      <div class="equip-row"><div class="eq-icon">${ICON.send}</div><div class="eq-txt"><b>ระบบจัดเก็บข้อมูล (Server/Cloud)</b> — ดาวน์โหลดไฟล์ภาพ/เสียงจาก Bodycam เข้าระบบส่วนกลางทันทีหลังจบงาน</div></div>
+      <div class="equip-row"><div class="eq-icon">${ICON.file}</div><div class="eq-txt"><b>ตู้เซฟ/ห้องนิรภัย</b> — จัดเก็บของกลางและสารตัวอย่างควบคุม (Scent Samples) ป้องกันสูญหาย/ปนเปื้อน</div></div>
+      <div class="equip-row"><div class="eq-icon">${ICON.sop}</div><div class="eq-txt"><b>สมุดสารบบราชการ</b> — บัญชีคุมการเบิก‑จ่ายตัวอย่าง, สมุดประวัติฝึก/ออกปฏิบัติงาน K‑9 เพื่อใช้เป็นพยานหลักฐานในชั้นศาล</div></div>
+    </div>`},
+  {t:'บทลงโทษเมื่อเจ้าหน้าที่ใช้อำนาจมิชอบ', body:`
+    <p style="margin:0 0 10px;">คดีจะถูกพิจารณาที่ <b>ศาลอาญาคดีทุจริตและประพฤติมิชอบ</b> ไม่ยกเว้นแม้เป็นทหารซึ่งปกติขึ้นศาลทหาร</p>
+    <div class="penalty-card">
+      <div class="pc-sevbar sev-3"></div>
+      <h4>มาตรา 5 — กระทำทรมาน (ซ้อม/เค้นความลับ/ช็อตไฟฟ้า/ยัดถุงดำ)</h4>
+      <div class="pc-body">
+        <div class="penalty-row"><span class="pr-label">กรณีทั่วไป</span><span class="pr-val">จำคุก 5‑15 ปี + ปรับ 1‑3 แสนบาท</span></div>
+        <div class="penalty-row"><span class="pr-label">บาดเจ็บสาหัส</span><span class="pr-val">จำคุก 10‑25 ปี + ปรับ 2‑5 แสนบาท</span></div>
+        <div class="penalty-row"><span class="pr-label">ถึงแก่ความตาย</span><span class="pr-val">จำคุก 15‑30 ปี/ตลอดชีวิต + ปรับ 3 แสน‑1 ล้านบาท</span></div>
+      </div>
+    </div>
+    <div class="penalty-card">
+      <div class="pc-sevbar sev-2"></div>
+      <h4>มาตรา 6 — โหดร้าย ไร้มนุษยธรรม ย่ำยีศักดิ์ศรี (ข่มขู่/บังคับอดนอน/ดูหมิ่น)</h4>
+      <div class="pc-body">
+        <div class="penalty-row"><span class="pr-label">บทลงโทษ</span><span class="pr-val">จำคุกไม่เกิน 3 ปี หรือปรับไม่เกิน 60,000 บาท หรือทั้งจำทั้งปรับ</span></div>
+      </div>
+    </div>
+    <div class="penalty-card">
+      <div class="pc-sevbar sev-3"></div>
+      <h4>มาตรา 7 — กระทำให้บุคคลสูญหาย (จับแล้วปกปิดชะตากรรม/อุ้มหาย)</h4>
+      <div class="pc-body">
+        <div class="penalty-row"><span class="pr-label">บทลงโทษ</span><span class="pr-val">จำคุก 5‑15 ปี + ปรับ 1‑3 แสนบาท</span></div>
+        <div class="penalty-row"><span class="pr-label">บาดเจ็บสาหัส/ตาย</span><span class="pr-val">โทษเพิ่มขึ้นเช่นเดียวกับฐานทรมาน</span></div>
+      </div>
+    </div>
+    <div class="penalty-card">
+      <div class="pc-sevbar sev-1"></div>
+      <h4>มาตรา 42 — ผู้บังคับบัญชาที่รู้แล้วไม่ระงับ/ป้องกัน</h4>
+      <div class="pc-body">
+        <div class="penalty-row"><span class="pr-label">บทลงโทษ</span><span class="pr-val">ระวางโทษกึ่งหนึ่งของความผิดนั้นๆ</span></div>
+      </div>
+    </div>
+    <div class="penalty-card">
+      <div class="pc-sevbar sev-1"></div>
+      <h4>ป.อาญา มาตรา 157 — ปฏิบัติ/ละเว้นหน้าที่โดยมิชอบ (เรียกรับเงิน/ยัดข้อหา)</h4>
+      <div class="pc-body">
+        <div class="penalty-row"><span class="pr-label">บทลงโทษ</span><span class="pr-val">จำคุก 1‑10 ปี หรือปรับ 20,000‑200,000 บาท หรือทั้งจำทั้งปรับ</span></div>
+      </div>
+    </div>
+    <p class="penalty-note">* อ้างอิงจาก พ.ร.บ.ป้องกันและปราบปรามการทรมานและการกระทำให้บุคคลสูญหาย พ.ศ. 2565 และประมวลกฎหมายอาญา</p>`},
+];
+renderAcc('deep-acc', DEEP_DATA);
+</script>
+
+<script>
+/* ================= CHECKLISTS ================= */
+const CL1_GROUPS = [
+  {h:'เตรียมการก่อนตั้งจุด', items:[
+    'ขออนุมัติตามระดับด่าน (ครม./กอ.รมน. — ผบก. — หัวหน้าสถานี)',
+    'ประเมิน Risk Profiling พื้นที่และเส้นทาง',
+    'ติดตั้งไฟส่องสว่าง/ป้ายสะท้อนแสงระยะ 150 เมตร',
+    'ติดป้ายยศ-ชื่อหัวหน้าด่าน และป้ายแจ้งสิทธิ์ร้องเรียน',
+    'แบ่งกำลังพล 4 ส่วน: Spotter / Contact / Cover / ชุดเคลื่อนที่เร็ว'
+  ]},
+  {h:'ปฏิบัติหน้าด่าน', items:[
+    'ให้สัญญาณจอดรถ ตรวจจับป้ายทะเบียนพับ/หาย',
+    'สังเกตอากัปกิริยาพิรุธ ภายในเวลาไม่เกิน 5 นาที',
+    'ฝากลายนิ้วมือ/DNA บริเวณท้ายรถทุกคัน',
+    'เข้าตรวจจากมุมปลอดภัย (ด้านหลังเยื้องขวา)',
+    'ตรวจเอกสาร ซักถามหลัก 5W1H'
+  ]},
+  {h:'ตรวจค้นเชิงลึก', items:[
+    'จัดกำลังตรวจค้น 4 คนต่อรถ 1 คัน ขนาบข้างละ 2',
+    'แยกเจ้าหน้าที่เพศเดียวกันตรวจค้นตัวบุคคล',
+    'เรียกชุด K‑9 เข้าดมซ้ำหลังกำลังพลเคลียร์พื้นที่แล้ว',
+    'สังเกตปฏิกิริยา Alert ของสุนัขอย่างใกล้ชิด'
+  ]},
+  {h:'เมื่อพบของกลาง / จับกุม', items:[
+    'บันทึกภาพและเสียงต่อเนื่องจนส่งพนักงานสอบสวน',
+    'แจ้งพนักงานอัยการและนายอำเภอในท้องที่ทันที',
+    'กรอกแบบบันทึก ปท.1 ให้ครบทุกช่อง',
+    'เก็บพยานหลักฐานด้วยคีมคีบสะอาด ไม่ใช้มือเปล่า'
+  ]}
+];
+const CL2_GROUPS = [
+  {h:'ก่อนเข้าพื้นที่', items:[
+    'บรีฟข้อมูลระหว่างผู้บังคับสุนัขกับหัวหน้าชุดปฏิบัติการ',
+    'ตรวจสุขภาพและความพร้อมร่างกายของสุนัขก่อนออกปฏิบัติ',
+    'Decompression: พาสุนัขดื่มน้ำ/ขับถ่าย 10 นาทีก่อนเริ่มภารกิจ'
+  ]},
+  {h:'ระหว่างปิดล้อมตรวจค้น', items:[
+    'ให้กำลังพลมนุษย์เคลียร์พื้นที่ก่อน สุนัขรอที่หน่วยระวังหลัง',
+    'เมื่อได้รับสัญญาณ นำสุนัขเดินดมซ้ำทีละห้องตามแนวผนัง',
+    'ช่วยเหลือเชิงกลไก เช่น เปิดประตู/ตู้ให้กลิ่นไหลออก',
+    'จำกัดเวลาทำงานต่อเนื่องไม่เกิน 3 ชั่วโมง'
+  ]},
+  {h:'เมื่อสุนัข Alert', items:[
+    'สังเกต Passive Alert: นั่ง/หมอบนิ่งจ้องแหล่งกลิ่น',
+    'แจ้งหัวหน้าชุดและเจ้าหน้าที่เก็บวัตถุพยานทันที',
+    'พาสุนัขออกจากจุดเพื่อลดการปนเปื้อนหลักฐาน'
+  ]},
+  {h:'หลังภารกิจ', items:[
+    'ให้รางวัล/เล่นลูกบอลปี๊บเพื่อผ่อนคลาย (Decompression)',
+    'พาเดินคูลดาวน์ก่อนนำเข้ากรงเดินทางกลับ',
+    'บันทึกสมุดประวัติการฝึกและผลปฏิบัติงานประจำสัปดาห์'
+  ]}
+];
+function loadCL(key){ try{return JSON.parse(sessionStorage_shim.get(key)||'{}');}catch(e){return {};} }
+// simple in-memory store (no browser storage per platform rules)
+const MEM = { cl1:{}, cl2:{} };
+function renderChecklist(key, groups){
+  const body = document.getElementById(key+'-body');
+  let idx=0;
+  body.innerHTML = groups.map(g=>{
+    const items = g.items.map(txt=>{
+      const id = key+'-'+(idx++);
+      return `<div class="check-item" id="${id}" onclick="toggleCheck('${key}','${id}')">
+        <div class="box"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+        <div class="txt">${txt}</div>
+      </div>`;
+    }).join('');
+    return `<div class="check-group"><h4>${g.h}</h4>${items}</div>`;
+  }).join('');
+  updateProgress(key, idx);
+}
+function toggleCheck(key, id){
+  const el = document.getElementById(id);
+  el.classList.toggle('done');
+  MEM[key][id] = el.classList.contains('done');
+  const total = document.querySelectorAll(`#${key}-body .check-item`).length;
+  updateProgress(key, total);
+}
+function updateProgress(key, total){
+  const done = document.querySelectorAll(`#${key}-body .check-item.done`).length;
+  const pct = total ? Math.round(done/total*100) : 0;
+  document.getElementById(key+'-fill').style.width = pct+'%';
+  document.getElementById(key+'-pct').textContent = pct+'%';
+}
+function resetChecklist(key){
+  document.querySelectorAll(`#${key}-body .check-item.done`).forEach(e=>e.classList.remove('done'));
+  MEM[key] = {};
+  const total = document.querySelectorAll(`#${key}-body .check-item`).length;
+  updateProgress(key, total);
+}
+renderChecklist('cl1', CL1_GROUPS);
+renderChecklist('cl2', CL2_GROUPS);
+</script>
+
+<script>
+/* ================= AI ASSISTANT TOPICS ================= */
+const TOPICS = [
+  {title:'ขั้นตอนส่งเอกสารแจ้งควบคุมตัวไปศูนย์อัยการทางอิเล็กทรอนิกส์', steps:[
+    'กรอกข้อมูลอัตลักษณ์ผู้ถูกจับและพฤติการณ์ลงแบบ ปท.1 ให้ครบทุกช่อง',
+    'ถ่ายภาพผู้ถูกจับให้เห็นสภาพร่างกายภายนอกชัดเจน (ไม่ต้องถอดเสื้อผ้า)',
+    'ส่งข้อมูลผ่านศูนย์รับแจ้งอิเล็กทรอนิกส์ไปยังพนักงานอัยการและนายอำเภอในท้องที่โดยทันที',
+    'กรณีกรุงเทพมหานคร ให้แจ้งผู้อำนวยการสำนักการสอบสวนและนิติการ กรมการปกครอง แทนนายอำเภอ',
+    'เก็บหลักฐานการรับแจ้งจากศูนย์รับแจ้งไว้เป็นหลักฐาน',
+    'รายงานหัวหน้าหน่วยงานทราบทันทีเมื่อได้รับหลักฐานการแจ้ง'
+  ]},
+  {title:'Preservation of Lives & Use of Force — บันไดการใช้กำลัง 10 ขั้น', steps:[
+    '1) การปรากฏตัวของเจ้าหน้าที่ / การเจรจาต่อรอง',
+    '2) การเตือนด้วยวาจา',
+    '3) เทคนิคควบคุมทางกายภาพ: ควบคุมมือเปล่า / กดจุด / ใส่เครื่องพันธนาการ',
+    '4) เทคนิคตอบโต้อย่างรุนแรง: เตะ ชก ทุ่ม หรือใช้สารเคมีระคายเคือง',
+    '5) การติดอาวุธเพื่อแสดงกำลังให้เห็น',
+    '6) อาวุธไม่ถึงตาย: กระบอง กระสุนยาง เครื่องช็อตไฟฟ้า',
+    '7) การใช้กำลังขั้นเด็ดขาด: อาวุธปืน',
+    '8) ยิงเตือนทีละนัดในทิศทางปลอดภัย เช่น ยิงขึ้นฟ้า',
+    '9) ใช้อาวุธเมื่อมาตรการอื่นครบถ้วนแล้วไม่สำเร็จ และภัยใกล้ถึงตัว (ป.อ. ม.68)',
+    '10) การใช้กำลังต้องมีขอบเขตทั้งขนาดและเวลา ได้สัดส่วนกับภัยคุกคามเสมอ'
+  ], note:'หลักการป้องกันตัวตามกฎหมาย ใช้ 2 ทฤษฎีตัดสิน: <b>ทฤษฎีส่วนสัด</b> (อันตรายที่จะเกิดต้องได้สัดส่วนกับการตอบโต้) และ <b>ทฤษฎีวิถีทางน้อยที่สุด</b> (เลือกวิธีที่รุนแรงน้อยที่สุดที่ยังป้องกันได้ผล)'},
+  {title:'ปฏิบัติหน้าที่เมื่อไม่มีกล้อง Body Cam โดยไม่ขัด พ.ร.บ.อุ้มหาย 2565', steps:[
+    'หากเกิดเหตุสุดวิสัยที่ไม่สามารถบันทึกภาพ/เสียงได้ ให้บันทึกเหตุสุดวิสัยนั้นลงแบบ ปท.1 ช่อง 7 ทันที',
+    'ใช้อุปกรณ์สำรองที่มีอยู่ เช่น กล้องมือถือส่วนตัว หรือกล้องติดรถยนต์ ทดแทนทันทีที่ทำได้',
+    'เมื่อสถานการณ์กลับสู่ภาวะปกติ ต้องเริ่มบันทึกภาพและเสียงทันที',
+    'จดบันทึกพยานแวดล้อม (เพื่อนร่วมชุด/ประชาชน) ที่อยู่ในเหตุการณ์',
+    'รายงานหัวหน้าหน่วยงานพร้อมเหตุผลของการไม่สามารถบันทึกได้โดยละเอียด',
+    'ห้ามปกปิด แก้ไข หรือสร้างหลักฐานเท็จเกี่ยวกับการไม่มีกล้องโดยเด็ดขาด'
+  ]},
+  {title:'เผชิญเหตุคนร้ายใช้อาวุธปืนต่อสู้ขัดขืนหน้าด่าน', steps:[
+    'สั่งกำลังพลหาที่กำบังทันที และประกาศเตือนด้วยวาจาก่อนเสมอหากมีเวลา',
+    'ประเมินตามทฤษฎีส่วนสัดและวิถีทางน้อยที่สุดก่อนตัดสินใจใช้กำลัง',
+    'หากมีเวลาและปลอดภัย ให้ยิงเตือนในทิศทางปลอดภัยก่อน (เช่น ยิงขึ้นฟ้า)',
+    'ใช้กำลังถึงชีวิตเฉพาะเพื่อป้องกันชีวิตตนเองหรือผู้อื่นที่ใกล้ถึงอันตรายเท่านั้น',
+    'หลังยุติเหตุ ให้ปฐมพยาบาลผู้บาดเจ็บทุกฝ่ายทันที',
+    'รักษาสภาพที่เกิดเหตุ แจ้งหน่วยเหนือ และบันทึกภาพ/เสียงต่อเนื่อง',
+    'เตรียมข้อเท็จจริงตอบคำถามสังคม สื่อมวลชน และกระบวนการยุติธรรมได้อย่างโปร่งใส'
+  ]}
+];
+function topicHtml(t){
+  const stepsHtml = t.steps.map((s,i)=>`<div class="check-item" style="cursor:default;"><div class="box" style="background:rgba(94,230,255,.14);border-color:rgba(94,230,255,.4);"><span style="font-family:'Kanit';font-size:11px;color:var(--cyan-glow);">${i+1}</span></div><div class="txt">${s}</div></div>`).join('');
+  return `<div class="intro-card" style="margin-bottom:12px;"><h2 style="font-size:15px;">${t.title}</h2></div>${stepsHtml}${t.note?`<div class="acc-inner warn" style="margin-top:10px;">${t.note}</div>`:''}`;
+}
+function openTopic(i){
+  document.getElementById('topic-detail').innerHTML = topicHtml(TOPICS[i]);
+  document.getElementById('topic-detail').scrollIntoView({behavior:'smooth', block:'start'});
+}
+function randomTopic(){
+  const i = Math.floor(Math.random()*TOPICS.length);
+  openTopic(i);
+}
+</script>
+
+<script>
+/* ================= PT1 FORM ================= */
+function clearPt1(){
+  ['pt-name','pt-id','pt-age','pt-addr','pt-datetime','pt-place','pt-behavior','pt-detain','pt-officer','pt-officerphone','pt-force'].forEach(id=>document.getElementById(id).value='');
+}
+function savePt1(){
+  const g = id => document.getElementById(id).value.trim();
+  const content =
+`แบบบันทึก ปท.1
+ตามมาตรา 10 พ.ร.บ.ป้องกันและปราบปรามการทรมานและการกระทำให้บุคคลสูญหาย พ.ศ. 2565
+==============================================
+
+1. ข้อมูลผู้ถูกควบคุมตัว
+ชื่อ-สกุล: ${g('pt-name')||'-'}
+เลขบัตรประชาชน: ${g('pt-id')||'-'}
+อายุโดยประมาณ: ${g('pt-age')||'-'}
+ที่อยู่/เบอร์โทร: ${g('pt-addr')||'-'}
+
+2. วัน เวลา สถานที่จับกุม
+วัน-เวลา: ${g('pt-datetime')||'-'}
+สถานที่จับกุม: ${g('pt-place')||'-'}
+
+3. พฤติการณ์การจับกุมโดยย่อ
+${g('pt-behavior')||'-'}
+
+4. สถานที่ที่จะนำตัวไปควบคุม
+${g('pt-detain')||'-'}
+
+5. เจ้าหน้าที่ผู้รับผิดชอบ
+ยศ-ชื่อ-สกุล: ${g('pt-officer')||'-'}
+เบอร์โทรศัพท์: ${g('pt-officerphone')||'-'}
+
+6. เหตุสุดวิสัย (ถ้ามี)
+${g('pt-force')||'-ไม่มี-'}
+
+==============================================
+สร้างจากแอปฝึกอบรม SENTINEL LINE (เอกสารฝึกอบรม ไม่ใช่เอกสารราชการจริง)
+วันที่พิมพ์: ${new Date().toLocaleString('th-TH')}
+`;
+  const blob = new Blob([content], {type:'text/plain;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const safeName = (g('pt-name')||'unnamed').replace(/[^a-zA-Z0-9ก-๙]/g,'_');
+  a.href = url;
+  a.download = `PT1_${safeName}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url), 3000);
+  showToast('บันทึกไฟล์ ปท.1 เรียบร้อยแล้ว');
+}
+function showToast(msg){
+  const t = document.getElementById('saveToast');
+  t.innerHTML = ICON.toastok + `<span>${msg}</span>`;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2600);
+}
+</script>
+
+<script>
+/* ================= QUIZ ENGINE ================= */
+const QUESTIONS = [
+  {cat:'การตั้งด่าน', q:'ด่านตรวจถาวรตลอด 24 ชั่วโมง ต้องได้รับอนุมัติจากใคร?', opts:['หัวหน้าสถานีตำรวจ','ผู้บังคับการตำรวจภูธรจังหวัด (ผบก.)','คณะรัฐมนตรี หรือ กอ.รมน.','นายอำเภอท้องที่'], correct:2},
+  {cat:'การตั้งด่าน', q:'จุดตรวจชั่วคราวบนเส้นทางรอง ต้องได้รับอนุมัติจากระดับใดขึ้นไป?', opts:['ผบก.','สารวัตร','รองผู้กำกับ','ครม.'], correct:0},
+  {cat:'การตั้งด่าน', q:'จุดสกัด (Frog Jump) โดยทั่วไปจะตั้งอยู่ ณ จุดหนึ่งนานเท่าใดก่อนสุ่มย้าย?', opts:['1-2 ชั่วโมง','10-20 นาที','ตลอดทั้งวัน','30-40 นาที'], correct:1},
+  {cat:'การตั้งด่าน', q:'เวลากลางคืน ต้องมีแสงไฟส่องสว่างมองเห็นจุดตรวจชัดเจนในระยะไม่น้อยกว่าเท่าใด?', opts:['50 เมตร','100 เมตร','150 เมตร','300 เมตร'], correct:2},
+  {cat:'การตั้งด่าน', q:'ป้ายแสดงยศ-ชื่อหัวหน้าด่านและป้ายแจ้งสิทธิ์ร้องเรียนทุจริต ต้องมองเห็นชัดในระยะเท่าใด?', opts:['5 เมตร','15 เมตร','50 เมตร','100 เมตร'], correct:1},
+  {cat:'การตั้งด่าน', q:'ชุดคอยเหตุซุ่มสกัดหนี วางกำลังห่างจากจุดตรวจในระยะเท่าใด?', opts:['50 เมตร','100 เมตร','200 เมตร','500 เมตร'], correct:2},
+  {cat:'การตั้งด่าน', q:'มาตรฐานเจ้าหน้าที่ตรวจค้นควรมีกี่คนต่อยานพาหนะ 1 คัน?', opts:['1 คน','2 คน','4 คน','8 คน'], correct:2},
+  {cat:'การข่าว', q:'ระดับความน่าเชื่อถือของแหล่งข่าวที่สูงที่สุดใช้อักษรใด?', opts:['ก.','ข.','ฉ.','จ.'], correct:0},
+  {cat:'การข่าว', q:'ระดับความแน่นอนของข้อมูลที่ "ยืนยันจากแหล่งอื่น" ใช้ตัวเลขใด?', opts:['1','3','5','6'], correct:0},
+  {cat:'พ.ร.บ.อุ้มหาย', q:'ตาม พ.ร.บ.อุ้มหาย ต้องเก็บรักษาบันทึกภาพและเสียงไว้อย่างน้อยกี่วัน (กรณีทั่วไป)?', opts:['30 วัน','90 วัน','180 วัน','365 วัน'], correct:2},
+  {cat:'พ.ร.บ.อุ้มหาย', q:'หากผู้ถูกจับได้รับอันตรายสาหัสหรือถึงแก่ความตาย ต้องเก็บบันทึกภาพเสียงไว้อย่างน้อยกี่ปี?', opts:['1 ปี','2 ปี','5 ปี','10 ปี'], correct:1},
+  {cat:'พ.ร.บ.อุ้มหาย', q:'ความผิดฐานกระทำทรมาน (มาตรา 5) มีโทษจำคุกเท่าใด?', opts:['1-3 ปี','5-15 ปี','10-20 ปี','ไม่เกิน 1 ปี'], correct:1},
+  {cat:'พ.ร.บ.อุ้มหาย', q:'ความผิดฐานกระทำให้บุคคลสูญหาย (มาตรา 7) มีโทษจำคุกเท่าใด?', opts:['5-10 ปี','ไม่เกิน 3 ปี','15-30 ปี','20 ปีขึ้นไป'], correct:0},
+  {cat:'พ.ร.บ.อุ้มหาย', q:'แบบบันทึกที่เจ้าหน้าที่ต้องกรอกทุกครั้งเมื่อมีการควบคุมตัวบุคคลคือแบบใด?', opts:['แบบ บช.1','แบบ ปท.1','แบบ สอ.1','แบบ พงส.1'], correct:1},
+  {cat:'พ.ร.บ.อุ้มหาย', q:'เมื่อควบคุมตัวบุคคล ต้องแจ้งพนักงานอัยการและใครในท้องที่โดยทันที?', opts:['ผู้ว่าราชการจังหวัด','นายอำเภอ','กำนัน','ผู้ใหญ่บ้าน'], correct:1},
+  {cat:'พ.ร.บ.อุ้มหาย', q:'กรณีถูกกระทำทรมานตามมาตรา 5 ผู้เสียหายมีสิทธิได้รับเงินช่วยเหลือเท่าใด?', opts:['1 แสนบาท','2.5 แสนบาท','5 แสนบาท','1 ล้านบาท'], correct:2},
+  {cat:'การใช้กำลัง', q:'ตามบันไดการใช้กำลัง ขั้นตอนแรกสุดที่ควรปฏิบัติคือข้อใด?', opts:['การใช้อาวุธปืน','การปรากฏตัวของเจ้าหน้าที่และเจรจาต่อรอง','การเตะ ชก ทุ่ม','การยิงเตือน'], correct:1},
+  {cat:'การใช้กำลัง', q:'อาวุธปืนจัดอยู่ในบันไดการใช้กำลังระดับใด?', opts:['ขั้นเริ่มต้น','ขั้นเตือนด้วยวาจา','ขั้นเด็ดขาด','ไม่อยู่ในบันได'], correct:2},
+  {cat:'การใช้กำลัง', q:'ทฤษฎีที่ว่า "อันตรายที่จะเกิดขึ้นต้องได้สัดส่วนกับการกระทำตอบโต้" เรียกว่าอะไร?', opts:['ทฤษฎีวิถีทางน้อยที่สุด','ทฤษฎีส่วนสัด','ทฤษฎีป้องกันเกินกว่าเหตุ','ทฤษฎีเจตนาพิเศษ'], correct:1},
+  {cat:'การข่าว', q:'เจ้าหน้าที่คัดกรอง (Spotter) หน้าด่าน จำกัดเวลาวิเคราะห์รถแต่ละคันไม่เกินกี่นาที?', opts:['1 นาที','5 นาที','10 นาที','15 นาที'], correct:1}
+];
+let quizState = { name:'', idx:0, myScore:0, oppScore:0, timer:null, timeLeft:10, answered:false, audioCtx:null };
+
+document.getElementById('playerNameInput').addEventListener('input', e=>{
+  document.getElementById('startQuizBtn').disabled = e.target.value.trim().length===0;
+});
+
+function startQuiz(){
+  quizState.name = document.getElementById('playerNameInput').value.trim().slice(0,18) || 'ผู้เล่น';
+  quizState.idx = 0; quizState.myScore = 0; quizState.oppScore = 0;
+  document.getElementById('q-playername').textContent = quizState.name;
+  document.getElementById('rs-playername').textContent = quizState.name;
+  document.getElementById('quiz-stage-intro').style.display='none';
+  document.getElementById('quiz-stage-result').style.display='none';
+  document.getElementById('quiz-stage-play').style.display='block';
+  updateScores();
+  loadQuestion();
+}
+function updateScores(){
+  document.getElementById('q-playerscore').textContent = quizState.myScore;
+  document.getElementById('q-oppscore').textContent = quizState.oppScore;
+}
+function beep(freq=880, dur=0.08){
+  try{
+    if(!quizState.audioCtx) quizState.audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+    const ctx = quizState.audioCtx;
+    const osc = ctx.createOscillator(); const gain = ctx.createGain();
+    osc.frequency.value = freq; osc.type='sine';
+    gain.gain.setValueAtTime(0.06, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+dur);
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.start(); osc.stop(ctx.currentTime+dur);
+  }catch(e){}
+}
+function loadQuestion(){
+  quizState.answered = false;
+  const q = QUESTIONS[quizState.idx];
+  document.getElementById('q-index').textContent = `ข้อที่ ${quizState.idx+1} / ${QUESTIONS.length}`;
+  document.getElementById('q-cat').textContent = q.cat;
+  document.getElementById('q-text').textContent = q.q;
+  document.getElementById('q-feedback').className = 'feedback-strip';
+  document.getElementById('q-feedback').textContent = '';
+  const letters = ['ก','ข','ค','ง'];
+  const optWrap = document.getElementById('q-options');
+  optWrap.innerHTML = q.opts.map((o,i)=>`
+    <div class="opt-btn" data-i="${i}" onclick="answerQuestion(${i})">
+      <div class="letter">${letters[i]}</div><div>${o}</div>
+    </div>`).join('');
+  startTimer();
+}
+function startTimer(){
+  quizState.timeLeft = 10;
+  const circle = document.getElementById('timerCircle');
+  const CIRC = 176;
+  circle.style.stroke = 'var(--cyan-glow)';
+  circle.style.strokeDashoffset = 0;
+  document.getElementById('timerNum').textContent = quizState.timeLeft;
+  clearInterval(quizState.timer);
+  quizState.timer = setInterval(()=>{
+    quizState.timeLeft--;
+    document.getElementById('timerNum').textContent = Math.max(quizState.timeLeft,0);
+    const offset = CIRC * (1 - quizState.timeLeft/10);
+    circle.style.strokeDashoffset = offset;
+    if(quizState.timeLeft<=3 && quizState.timeLeft>0){ circle.style.stroke='var(--red)'; beep(660,0.09); }
+    if(quizState.timeLeft<=0){
+      clearInterval(quizState.timer);
+      if(!quizState.answered) timeOut();
+    }
+  },1000);
+}
+function timeOut(){
+  quizState.answered = true;
+  quizState.oppScore++;
+  revealAnswer(-1, false);
+  showFeedback(false, true);
+  updateScores();
+  scheduleNext();
+}
+function answerQuestion(i){
+  if(quizState.answered) return;
+  quizState.answered = true;
+  clearInterval(quizState.timer);
+  const q = QUESTIONS[quizState.idx];
+  const correct = i === q.correct;
+  if(correct){ quizState.myScore++; beep(1046,0.12);} else { quizState.oppScore++; beep(220,0.15); }
+  revealAnswer(i, correct);
+  showFeedback(correct, false);
+  updateScores();
+  scheduleNext();
+}
+function revealAnswer(chosenIdx, wasCorrect){
+  const q = QUESTIONS[quizState.idx];
+  document.querySelectorAll('.opt-btn').forEach(btn=>{
+    const i = +btn.dataset.i;
+    btn.classList.add('disabled');
+    if(i===q.correct) btn.classList.add('correct');
+    else if(i===chosenIdx && !wasCorrect) btn.classList.add('wrong');
+  });
+}
+function showFeedback(correct, timedOut){
+  const f = document.getElementById('q-feedback');
+  if(timedOut){ f.textContent = 'หมดเวลา! "ดาบแหลม" ได้ 1 คะแนน'; f.className='feedback-strip lose show'; }
+  else if(correct){ f.textContent = 'ถูกต้อง! คุณได้ 1 คะแนน'; f.className='feedback-strip win show'; }
+  else{ f.textContent = 'ตอบผิด! "ดาบแหลม" ได้ 1 คะแนน'; f.className='feedback-strip lose show'; }
+}
+function scheduleNext(){
+  setTimeout(()=>{
+    quizState.idx++;
+    if(quizState.idx >= QUESTIONS.length){ showResult(); }
+    else{ loadQuestion(); }
+  }, 1600);
+}
+function showResult(){
+  document.getElementById('quiz-stage-play').style.display='none';
+  document.getElementById('quiz-stage-result').style.display='block';
+  document.getElementById('rs-playerscore').textContent = quizState.myScore;
+  document.getElementById('rs-oppscore').textContent = quizState.oppScore;
+  const playerWin = quizState.myScore > quizState.oppScore;
+  const tie = quizState.myScore === quizState.oppScore;
+  document.getElementById('resultTitle').textContent = tie ? 'เสมอกัน!' : (playerWin ? `${quizState.name} ชนะ!` : '"ดาบแหลม" ชนะ!');
+  document.getElementById('resultSub').textContent = `คะแนนสุดท้าย ${quizState.myScore} : ${quizState.oppScore}`;
+  document.getElementById('crown-player').textContent = playerWin ? '👑' : '';
+  document.getElementById('crown-opp').textContent = (!playerWin && !tie) ? '👑' : '';
+  document.getElementById('rs-player').classList.toggle('winner', playerWin);
+  document.getElementById('rs-opp').classList.toggle('winner', !playerWin && !tie);
+}
+function restartQuiz(){
+  document.getElementById('quiz-stage-result').style.display='none';
+  document.getElementById('quiz-stage-intro').style.display='block';
+  document.getElementById('playerNameInput').value='';
+  document.getElementById('startQuizBtn').disabled = true;
+}
+</script>
+
+</body>
+</html>
